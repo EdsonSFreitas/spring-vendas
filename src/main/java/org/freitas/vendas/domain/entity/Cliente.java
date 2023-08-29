@@ -4,7 +4,7 @@ import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Edson da Silva Freitas
@@ -20,15 +20,30 @@ import java.util.Objects;
 @Entity
 @Table(name = "tb_cliente")
 public class Cliente {
-    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Integer id;
-    @NonNull // Indica que o campo nome é obrigatório
+
+    @NonNull
     @Column(name = "nome", length = 100)
     private String nome;
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "cliente")
+    private Set<Pedido> pedidos = new HashSet<>();
+
+    public void addPedido(Pedido pedido) {
+        Optional.ofNullable(this.pedidos).ifPresent(p -> p.add(pedido));
+    }
+
+    public void removePedido(Pedido pedido) {
+        Optional.ofNullable(this.pedidos).ifPresent(p -> p.remove(pedido));
+    }
+
+    public Set<Pedido> getPedidos() {
+        return Collections.unmodifiableSet(pedidos);
+    }
 
     @Override
     public final boolean equals(Object o) {

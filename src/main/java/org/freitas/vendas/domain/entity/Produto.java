@@ -23,6 +23,8 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String descricao;
+
+    @Column(name = "preco", length = 20, precision = 2)
     private BigDecimal preco;
 
     @Override
