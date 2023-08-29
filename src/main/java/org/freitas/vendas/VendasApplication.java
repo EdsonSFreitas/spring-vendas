@@ -7,6 +7,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,46 +17,36 @@ import java.util.Optional;
 @SpringBootApplication
 public class VendasApplication {
 
-    private static void listagemClientes(ClienteRepository clienteRepository) {
-        List<Cliente> clientes;
-        System.out.println("\t LISTA DE CLIENTES: ");
-        clientes = clienteRepository.findAll();
+    public static void main(String[] args) {
+        SpringApplication.run(VendasApplication.class, args);
+    }
+
+    private static void listarTodos(ClienteRepository clienteRepository) {
+        Pageable pageable = PageRequest.of(0, 50);
+        Page<Cliente> clientes = clienteRepository.findAll(pageable);
         for (Cliente cliente : clientes) {
             System.out.println(cliente);
         }
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(VendasApplication.class, args);
     }
 
     @Bean
     public CommandLineRunner init(@Autowired ClienteRepository clienteRepository) {
         return args -> {
             System.out.println("\t LISTA ORIGINAL: ");
-            clienteRepository.salvar(new Cliente(null, "Freitas"));
-            clienteRepository.salvar(new Cliente(null, "Avel"));
-            clienteRepository.salvar(new Cliente(null, "Maribel"));
-            clienteRepository.salvar(new Cliente(null, "Ruby"));
-            List<Cliente> clientes = clienteRepository.findAll();
-            for (Cliente cliente : clientes) {
-                System.out.println(cliente);
-            }
+            clienteRepository.salvar(new Cliente("Ruby"));
+            clienteRepository.salvar(new Cliente("Maribel"));
+            clienteRepository.salvar(new Cliente("Bianca XX"));
+            clienteRepository.salvar(new Cliente("Bianca YY"));
 
-            System.out.println("\t FIND BY ID 1 : ");
-            Optional<Cliente> cId = Optional.ofNullable(clienteRepository.buscarPorId(1));
-            cId.ifPresent(System.out::println);
+            listarTodos(clienteRepository);
 
-            Optional<Cliente> cUpdate = Optional.ofNullable(clienteRepository.buscarPorId(1));
-            cUpdate.ifPresent(cliente -> clienteRepository.atualizar(new Cliente(cliente.getId(), "Edson Freitas")));
+            final Optional<List<Cliente>> resultBusca = clienteRepository.buscarPorNome("bianca");
+            System.out.println(resultBusca.get());
 
-            listagemClientes(clienteRepository);
-            System.out.println("\t DELETE By ID: ");
-            Optional<Cliente> cDelete = Optional.ofNullable(clienteRepository.buscarPorId(1));
-            cDelete.ifPresent(cliente -> clienteRepository.deletarPorId(cliente.getId()));
+            System.out.println("\t DELETANDO: ");
+            clienteRepository.deletarPorId(1);
 
-            listagemClientes(clienteRepository);
-            clienteRepository.buscarPorNome("ruby").ifPresent(System.out::println);
+            listarTodos(clienteRepository);
         };
 
     }

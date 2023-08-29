@@ -4,12 +4,14 @@ import org.freitas.vendas.domain.entity.Cliente;
 import org.freitas.vendas.exceptions.ObjetoNaoEncontrado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,86 +24,60 @@ import java.util.Optional;
 @Repository
 public class ClienteRepository {
 
-    private static final String INSERT = "insert into cliente (nome) values (?)";
-    private static final String SELECT_ALL = "SELECT * FROM CLIENTE";
-    private static final String SELECT_ID = "SELECT * FROM CLIENTE WHERE ID =  ?";
-    private static final String SELECT_POR_NOME = "SELECT * FROM CLIENTE WHERE UPPER(NOME) LIKE UPPER(?)";
-    private static final String UPDATE = "UPDATE cliente SET nome = ? WHERE id = ?";
-    private static final String DELETE = "DELETE FROM cliente WHERE id = ?";
-
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private EntityManager entityManager;
 
+    @Transactional
     public Cliente salvar(Cliente cliente) {
-        jdbcTemplate.update(INSERT, cliente.getNome());
+        entityManager.persist(cliente);
         return cliente;
     }
 
+    @Transactional
     public Cliente atualizar(Cliente cliente) {
-        jdbcTemplate.update(UPDATE, cliente.getNome(), cliente.getId());
+        entityManager.merge(cliente);
         return cliente;
     }
 
+    @Transactional
     public void deletar(Cliente cliente) {
-        deletarPorId(cliente.getId());
+        if (!entityManager.contains(cliente)) {
+            cliente = entityManager.merge(cliente);
+        }
+        entityManager.remove(cliente);
     }
 
+    @Transactional
     public void deletarPorId(Integer id) {
-        jdbcTemplate.update(DELETE, id);
+        Cliente cliente = entityManager.find(Cliente.class, id);
+        deletar(cliente);
     }
 
+    @Transactional(readOnly = true)
     public Optional<List<Cliente>> buscarPorNome(String nome) {
-        String nomePesquisa = "%" + nome.toUpperCase() + "%";
-        return Optional.of(jdbcTemplate.query(SELECT_POR_NOME,
-                new Object[]{nomePesquisa}, new RowMapper<Cliente>() {
-            @Override
-            public Cliente mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Integer id = rs.getInt("id");
-                String nome = rs.getString("nome");
-                return new Cliente(id, nome);
-            }
-        }));
+        String jpql = "SELECT c FROM Cliente c WHERE UPPER(c.nome) like UPPER(:nome)";
+        final TypedQuery<Cliente> clienteTypedQuery = entityManager.createQuery(jpql, Cliente.class)
+                .setParameter("nome", "%" + nome + "%");
+        return Optional.of(clienteTypedQuery.getResultList());
     }
 
-
+    @Transactional(readOnly = true)
     public Cliente buscarPorId(Integer id) {
         try {
-            return jdbcTemplate.queryForObject(SELECT_ID, new Object[]{id}, new RowMapper<Cliente>() {
-                @Override
-                public Cliente mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    Integer clienteId = rs.getInt("id");
-                    String nome = rs.getString("nome");
-                    return new Cliente(clienteId, nome);
-                }
-            });
+            return Optional.of(entityManager.find(Cliente.class, id))
+                    .orElseThrow(() -> new ObjetoNaoEncontrado(String.valueOf(id), "Cliente não encontrado"));
         } catch (EmptyResultDataAccessException | IllegalStateException e) {
-            throw new ObjetoNaoEncontrado( String.valueOf(id), "Cliente não encontrado");
+            throw new ObjetoNaoEncontrado(String.valueOf(id), "Ocorreu erro ao obter o cliente");
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public List<Cliente> findAll() {
-        return jdbcTemplate.query(SELECT_ALL, new RowMapper<Cliente>() {
-            @Override
-            public Cliente mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Integer id = rs.getInt("id");
-                String nome = rs.getString("nome");
-                return new Cliente(id, nome);
-            }
-        });
+    @Transactional(readOnly = true)
+    public Page<Cliente> findAll(Pageable pageable) {
+        String jpql = "SELECT c FROM Cliente c";
+        final TypedQuery<Cliente> clienteTypedQuery = entityManager.createQuery(jpql, Cliente.class);
+        clienteTypedQuery.setFirstResult((int) pageable.getOffset());
+        clienteTypedQuery.setMaxResults(pageable.getPageSize());
+        List<Cliente> resultList = clienteTypedQuery.getResultList();
+        return new PageImpl<>(resultList, pageable, resultList.size());
     }
 }
