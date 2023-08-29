@@ -32,24 +32,38 @@ public class VendasApplication {
     @Bean
     public CommandLineRunner init(@Autowired ClienteRepository clienteRepository) {
         return args -> {
-            System.out.println("\t LISTA ORIGINAL: ");
-            clienteRepository.salvar(new Cliente("Ruby"));
-            clienteRepository.salvar(new Cliente("Maribel"));
-            clienteRepository.salvar(new Cliente("Bianca XX"));
-            clienteRepository.salvar(new Cliente("Bianca YY"));
+            System.out.println("\t LISTA ORIGINAL: **********************************************");
+            clienteRepository.save(new Cliente("Ruby"));
+            clienteRepository.save(new Cliente("Maribel"));
+            clienteRepository.save(new Cliente("Bianca XX"));
+            clienteRepository.save(new Cliente("Bianca YY"));
 
             listarTodos(clienteRepository);
+            System.out.println("\t FIND BY NOME LIKE PAGEABLE: **********************************************");
+            Pageable pageable = PageRequest.of(0, 50);
+            final Optional<Page<Cliente>> resultBusca = clienteRepository.findByNomeLikeIgnoreCase("%Bianca%", pageable);
+            resultBusca.ifPresent(page -> {
+                 /*       System.out.println("Total de elementos encontrados: " + page.getTotalElements());
+                        System.out.println("Total de páginas: " + page.getTotalPages());
+                        System.out.println("Número da página atual: " + page.getNumber());
+                        System.out.println("Tamanho da página: " + page.getSize());*/
+                System.out.println("Clientes encontrados:");
+                page.forEach(cliente -> {
+                    System.out.println("ID: " + cliente.getId() + ", Nome: " + cliente.getNome());
+                });
+            });
+            System.out.println("\t FIND BY NOME OR ID: **********************************************");
+            final List<Cliente> resultList = clienteRepository.findByNomeOrId("%Maribel%", 4);
+            resultList.forEach(System.out::println);
 
-            final Optional<List<Cliente>> resultBusca = clienteRepository.buscarPorNome("bianca");
-            System.out.println(resultBusca.get());
+            System.out.println("\t FIND BY NOME LIKE LIST: **********************************************");
+            Optional<List<Cliente>> lisClientes =clienteRepository.findByNomeLikeIgnoreCase("%Bianca%");
+            lisClientes.ifPresent(c -> {
+                c.forEach(System.out::println);
+            });
 
-            System.out.println("\t DELETANDO: ");
-            clienteRepository.deletarPorId(1);
-
-            listarTodos(clienteRepository);
+            /*            System.out.println("\t DELETANDO: **********************************************");
+            clienteRepository.deleteById(1);*/
         };
-
     }
-
-
 }
