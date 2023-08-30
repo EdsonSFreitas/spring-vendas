@@ -16,6 +16,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "tb_produto")
 public class Produto {
@@ -24,7 +25,7 @@ public class Produto {
     private Integer id;
     private String descricao;
 
-    @Column(name = "preco", length = 20, precision = 2)
+    @Column(name = "preco", length = 20, precision = 20, scale = 2)
     private BigDecimal preco;
 
     @Override

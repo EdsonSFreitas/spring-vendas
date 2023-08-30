@@ -16,6 +16,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "tb_item_pedido")
 public class ItemPedido {

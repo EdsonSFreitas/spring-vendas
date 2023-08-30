@@ -17,6 +17,7 @@ import java.util.*;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "tb_pedido")
 public class Pedido {
@@ -31,10 +32,10 @@ public class Pedido {
     @Column(name = "data_pedido")
     private LocalDate dataPedido;
 
-    @Column(name = "total", length = 20, precision = 2)
+    @Column(name = "total", length = 20, precision = 20, scale = 2)
     private BigDecimal total;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     @ToString.Exclude
     private Set<ItemPedido> itens = new HashSet<>();
 

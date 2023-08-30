@@ -17,6 +17,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "tb_cliente")
 public class Cliente {

@@ -1,6 +1,7 @@
-package org.freitas.vendas.domain.repositorio;
+package org.freitas.vendas.domain.repository;
 
 import org.freitas.vendas.domain.entity.Cliente;
+import org.freitas.vendas.domain.entity.Pedido;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,12 +18,6 @@ import java.util.Optional;
  * {@code @project} vendas
  */
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
-    Optional<Page<Cliente>> findByNomeLikeIgnoreCase(String nome, Pageable pageable);
-    Optional<List<Cliente>> findByNomeLikeIgnoreCase(String nome);
-    List<Cliente> findByNomeOrId(String nome, Integer id);
-
-    @Query(value = "SELECT id,nome FROM tb_cliente c WHERE c.id = :id", nativeQuery = true)
-    Cliente buscaPorId(@Param("id") Integer id);
+public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
 
 }
