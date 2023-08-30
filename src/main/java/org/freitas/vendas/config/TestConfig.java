@@ -75,10 +75,13 @@ public class TestConfig implements CommandLineRunner {
                 " Pedido: "+ped1.getDataPedido()+
                 " Item Pedido: "+ip1.getProduto().getDescricao()+
                 " Total: "+ped1.getTotal());*/
-        System.out.println("Iniciando fetch");
+
+        /*System.out.println("Iniciando fetch para obter os pedidos a partir do cliente");
         final Cliente clienteFetchPedidos = clienteRepository.findClienteFetchPedidos(1);
-        //System.out.println(clienteFetchPedidos);
+        System.out.println(clienteFetchPedidos);
        System.out.println(clienteFetchPedidos.getPedidos());
+*/
+       pedidoRepository.findByCliente(c1).forEach(p -> System.out.println("Pedidos do cliente id 1: "+p));
 
     }
 }

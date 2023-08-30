@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Edson da Silva Freitas
@@ -19,5 +20,5 @@ import java.util.Optional;
  */
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
-
+    Set<Pedido> findByCliente(Cliente cliente);
 }
