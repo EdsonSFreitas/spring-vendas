@@ -3,8 +3,11 @@ package org.freitas.vendas.controller;
 import org.freitas.vendas.domain.dto.ClienteDto;
 import org.freitas.vendas.domain.entity.Cliente;
 import org.freitas.vendas.domain.repository.ClienteRepository;
+import org.freitas.vendas.exceptions.DatabaseException;
+import org.freitas.vendas.service.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -38,13 +41,12 @@ public class ClienteController {
     public ResponseEntity<ClienteDto> getClienteById(@PathVariable(value = "id") Integer id) {
         Optional<Cliente> cliente = repository.findById(id);
         return cliente.map(value -> ResponseEntity.ok().body(ClienteDto.fromEntity(value)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     @PostMapping()
     public ResponseEntity<ClienteDto> save(@RequestBody ClienteDto novoCliente) {
         Cliente cliente = new Cliente();
-        //cliente.setNome(novoCliente.getNome());
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(novoCliente, cliente);
@@ -60,32 +62,31 @@ public class ClienteController {
         Optional<Cliente> clienteAntigo = repository.findById(id);
         if (clienteAntigo.isPresent()) {
             Cliente clienteAtual = clienteAntigo.get();
-
-            /*clienteAtual.setNome(clienteAtualizado.getNome());
-            clienteAtual.setTesteNovoCampo(clienteAtualizado.getTesteNovoCampo());*/
-            // Copiar os atributos do clienteAtualizado para o clienteAtual usando o ModelMapper, ignorando campos null
             ModelMapper modelMapper = new ModelMapper();
-            modelMapper.getConfiguration().setSkipNullEnabled(true); //Ignora campos null como o id devido ao hibernate
+            modelMapper.getConfiguration().setSkipNullEnabled(true);
             modelMapper.map(clienteAtualizado, clienteAtual);
-
-
             repository.save(clienteAtual);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(clienteAntigo.get().getId()).toUri();
             return ResponseEntity.ok().location(location).body(fromEntity(clienteAtual));
+        } else {
+            throw new ResourceNotFoundException(id);
         }
-        return ResponseEntity.notFound().build();
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Cliente> delete(@PathVariable(value = "id") Integer id) {
-        Optional<Cliente> cliente = repository.findById(id);
-        if (cliente.isPresent()) {
-            repository.deleteById(id);
-            return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) {
+        try {
+            Optional<Cliente> cliente = repository.findById(id);
+            if (cliente.isPresent()) {
+                repository.deleteById(id);
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.notFound().build();
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
         }
-        return ResponseEntity.notFound().build();
     }
 
     @GetMapping()
