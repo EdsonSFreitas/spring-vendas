@@ -14,12 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.freitas.vendas.domain.dto.ClienteDto.fromEntity;
+import static org.freitas.vendas.util.ValidationUtils.checkId;
 
 /**
  * @author Edson da Silva Freitas
@@ -37,15 +39,22 @@ public class ClienteController {
         this.repository = repository;
     }
 
+    /**
+     * Retrieves a ClienteDto object by its ID.
+     *
+     * @param  id    the ID of the ClienteDto object to retrieve
+     * @return       the ResponseEntity containing the ClienteDto object
+     * @throws ResourceNotFoundException if the ClienteDto object is not found
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteDto> getClienteById(@PathVariable(value = "id") Integer id) {
-        Optional<Cliente> cliente = repository.findById(id);
+    public ResponseEntity<ClienteDto> getClienteById(@PathVariable(value = "id") String id) {
+        Optional<Cliente> cliente = repository.findById(checkId(id));
         return cliente.map(value -> ResponseEntity.ok().body(ClienteDto.fromEntity(value)))
                 .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     @PostMapping()
-    public ResponseEntity<ClienteDto> save(@RequestBody ClienteDto novoCliente) {
+    public ResponseEntity<ClienteDto> save(@Valid @RequestBody ClienteDto novoCliente) {
         Cliente cliente = new Cliente();
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
@@ -58,8 +67,8 @@ public class ClienteController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteDto> update(@RequestBody ClienteDto clienteAtualizado, @PathVariable Integer id) {
-        Optional<Cliente> clienteAntigo = repository.findById(id);
+    public ResponseEntity<ClienteDto> update(@Valid @RequestBody ClienteDto clienteAtualizado, @PathVariable @Valid String id) {
+        Optional<Cliente> clienteAntigo = repository.findById(checkId(id));
         if (clienteAntigo.isPresent()) {
             Cliente clienteAtual = clienteAntigo.get();
             ModelMapper modelMapper = new ModelMapper();
@@ -76,11 +85,11 @@ public class ClienteController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable(value = "id") @Valid String id) {
         try {
-            Optional<Cliente> cliente = repository.findById(id);
+            Optional<Cliente> cliente = repository.findById(checkId(id));
             if (cliente.isPresent()) {
-                repository.deleteById(id);
+                repository.deleteById(checkId(id));
                 return ResponseEntity.noContent().build();
             }
             return ResponseEntity.notFound().build();
@@ -117,7 +126,7 @@ public class ClienteController {
                 .map(ClienteDto::new)
                 .collect(Collectors.toList());
 
-// Cria uma nova Page contendo os objetos ClienteDto
+        // Cria uma nova Page contendo os objetos ClienteDto
         Page<ClienteDto> pageDto = new PageImpl<>(dtos, pageable, page.getTotalElements());
 
         return ResponseEntity.ok().body(pageDto);

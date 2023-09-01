@@ -5,7 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.freitas.vendas.domain.entity.Cliente;
+import org.springframework.format.annotation.NumberFormat;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
 /**
@@ -17,8 +21,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClienteDto implements Serializable {
+    private static final long serialVersionUID = -2232353118201999305L;
+
     Integer id;
+    @NotBlank
     String nome;
+    @Email(regexp = ".+@.+\\..+", message = "Email must be a well-formed email address")
     String email;
 
 

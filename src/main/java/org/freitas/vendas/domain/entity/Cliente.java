@@ -27,7 +27,6 @@ public class Cliente {
 
     @Column(name = "nome", length = 100, nullable = false)
     private String nome;
-
     private String email;
 
     @ToString.Exclude

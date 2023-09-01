@@ -8,6 +8,10 @@ package org.freitas.vendas.service;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(Object id) {
-        super("Resource not found. Id " + id);
+        super("Resource not found. " + id);
+    }
+
+    public ResourceNotFoundException(String message, Object id) {
+        super(message + " " + id);
     }
 }
