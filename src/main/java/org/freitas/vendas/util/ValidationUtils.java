@@ -1,7 +1,8 @@
 package org.freitas.vendas.util;
 
 import org.freitas.vendas.domain.dto.ClienteDto;
-import org.freitas.vendas.service.ResourceNotFoundException;
+import org.freitas.vendas.domain.dto.ProdutoDto;
+import org.freitas.vendas.exceptions.ResourceNotFoundException;
 
 /**
  * @author Edson da Silva Freitas
@@ -21,7 +22,7 @@ public class ValidationUtils {
         return Integer.parseInt(id);
     }
 
-    public static void validarFiltro(ClienteDto filtro) {
+    public static void validarFiltroClienteDto(ClienteDto filtro) {
         if (filtro == null) {
             throw new ResourceNotFoundException("The filter must not be null.");
         }
@@ -32,6 +33,16 @@ public class ValidationUtils {
 
         if (filtro.getEmail() != null && filtro.getEmail().length() < 3) {
             throw new ResourceNotFoundException("The 'email' attribute in the filter must have at least 3 characters: " + filtro.getEmail());
+        }
+    }
+
+    public static void validarFiltroProdutoDto(ProdutoDto filtro) {
+        if (filtro == null) {
+            throw new ResourceNotFoundException("The filter must not be null.");
+        }
+
+        if (filtro.getDescricao() != null && filtro.getDescricao().length() < 3) {
+            throw new ResourceNotFoundException("The 'nome' attribute in the filter must have at least 3 characters: " + filtro.getDescricao());
         }
     }
 }

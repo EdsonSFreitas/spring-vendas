@@ -1,4 +1,4 @@
-package org.freitas.vendas.service;
+package org.freitas.vendas.exceptions;
 
 /**
  * @author Edson da Silva Freitas

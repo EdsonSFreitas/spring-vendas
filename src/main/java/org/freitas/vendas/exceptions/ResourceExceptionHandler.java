@@ -1,8 +1,6 @@
 package org.freitas.vendas.exceptions;
 
 import lombok.Getter;
-import org.freitas.vendas.service.ResourceNotFoundException;
-import org.freitas.vendas.service.StandardError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

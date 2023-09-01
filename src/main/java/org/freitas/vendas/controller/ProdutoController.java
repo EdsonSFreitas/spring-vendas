@@ -1,10 +1,11 @@
 package org.freitas.vendas.controller;
 
-import org.freitas.vendas.domain.dto.ClienteDto;
-import org.freitas.vendas.domain.entity.Cliente;
-import org.freitas.vendas.domain.repository.ClienteRepository;
+import org.freitas.vendas.domain.dto.ProdutoDto;
+import org.freitas.vendas.domain.entity.Produto;
+import org.freitas.vendas.domain.repository.ProdutoRepository;
 import org.freitas.vendas.exceptions.DatabaseException;
 import org.freitas.vendas.exceptions.ResourceNotFoundException;
+import org.freitas.vendas.service.ProdutoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,8 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.freitas.vendas.domain.dto.ClienteDto.fromEntity;
-import static org.freitas.vendas.util.ValidationUtils.*;
+import static org.freitas.vendas.domain.dto.ProdutoDto.fromEntity;
+import static org.freitas.vendas.util.ValidationUtils.checkId;
+import static org.freitas.vendas.util.ValidationUtils.validarFiltroProdutoDto;
 
 /**
  * @author Edson da Silva Freitas
@@ -31,73 +33,75 @@ import static org.freitas.vendas.util.ValidationUtils.*;
  * {@code @project} spring-vendas
  */
 @RestController
-@RequestMapping("/api/clientes")
-public class ClienteController  implements Serializable {
-    private static final long serialVersionUID = 8553757501330900962L;
+@RequestMapping("/api/produtos")
+public class ProdutoController implements Serializable {
+    private static final long serialVersionUID = 6178785521518463717L;
 
-    private final ClienteRepository repository;
+    private final ProdutoRepository repository;
+    private final ProdutoService service;
 
     @Autowired
-    public ClienteController(ClienteRepository repository) {
+    public ProdutoController(ProdutoRepository repository, ProdutoService service) {
         this.repository = repository;
+        this.service = service;
     }
 
     /**
-     * Retrieves a ClienteDto object by its ID.
+     * Retrieves a ProdutoDTO object by its ID.
      *
-     * @param id the ID of the ClienteDto object to retrieve
-     * @return the ResponseEntity containing the ClienteDto object
-     * @throws ResourceNotFoundException if the ClienteDto object is not found
+     * @param id the ID of the ProdutoDTO object to retrieve
+     * @return the ResponseEntity containing the ProdutoDTO object
+     * @throws ResourceNotFoundException if the ProdutoDTO object is not found
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteDto> getClienteById(@PathVariable(value = "id") String id) {
-        Optional<Cliente> cliente = repository.findById(checkId(id));
-        return cliente.map(value -> ResponseEntity.ok().body(ClienteDto.fromEntity(value)))
+    public ResponseEntity<ProdutoDto> getClienteById(@PathVariable(value = "id") String id) {
+        Optional<Produto> produto = service.getClienteById(checkId(id));
+        return produto.map(value -> ResponseEntity.ok().body(ProdutoDto.fromEntity(value)))
                 .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     @PostMapping()
-    public ResponseEntity<ClienteDto> save(@Valid @RequestBody ClienteDto novoCliente) {
-        Cliente cliente = new Cliente();
+    public ResponseEntity<ProdutoDto> save(@Valid @RequestBody ProdutoDto novoProduto) {
+        Produto produto = new Produto();
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
-        modelMapper.map(novoCliente, cliente);
-        Cliente clienteSalvo = repository.save(cliente);
+        modelMapper.map(novoProduto, produto);
+        Produto produtoSalvo = repository.save(produto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(clienteSalvo.getId()).toUri();
-        return ResponseEntity.created(location).body(fromEntity(clienteSalvo));
+                .buildAndExpand(produtoSalvo.getId()).toUri();
+        return ResponseEntity.created(location).body(fromEntity(produtoSalvo));
     }
 
     @PostMapping("/bulk")
-    public ResponseEntity<List<ClienteDto>> saveAll(@Valid @RequestBody List<ClienteDto> novosClientes) {
-        List<Cliente> clientes = novosClientes.stream()
+    public ResponseEntity<List<ProdutoDto>> saveAll(@Valid @RequestBody List<ProdutoDto> novosProdutos) {
+        List<Produto> produtos = novosProdutos.stream()
                 .map(dto -> {
-                    Cliente cliente = new Cliente();
+                    Produto produto = new Produto();
                     ModelMapper modelMapper = new ModelMapper();
                     modelMapper.getConfiguration().setSkipNullEnabled(true);
-                    modelMapper.map(dto, cliente);
-                    return cliente;
+                    modelMapper.map(dto, produto);
+                    return produto;
                 })
                 .collect(Collectors.toList());
-        List<Cliente> clientesSalvos = repository.saveAll(clientes);
-        List<ClienteDto> dtos = clientesSalvos.stream()
-                .map(ClienteDto::fromEntity)
+        List<Produto> produtosSalvos = repository.saveAll(produtos);
+        List<ProdutoDto> dtos = produtosSalvos.stream()
+                .map(ProdutoDto::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.CREATED).body(dtos);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteDto> update(@Valid @RequestBody ClienteDto clienteAtualizado, @PathVariable @Valid String id) {
-        Optional<Cliente> clienteAntigo = repository.findById(checkId(id));
-        if (clienteAntigo.isPresent()) {
-            Cliente clienteAtual = clienteAntigo.get();
+    public ResponseEntity<ProdutoDto> update(@Valid @RequestBody ProdutoDto produtoAtualizado, @PathVariable @Valid String id) {
+        Optional<Produto> produtoAntigo = repository.findById(checkId(id));
+        if (produtoAntigo.isPresent()) {
+            Produto produtoAtual = produtoAntigo.get();
             ModelMapper modelMapper = new ModelMapper();
             modelMapper.getConfiguration().setSkipNullEnabled(true);
-            modelMapper.map(clienteAtualizado, clienteAtual);
-            repository.save(clienteAtual);
+            modelMapper.map(produtoAtualizado, produtoAtual);
+            repository.save(produtoAtual);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(clienteAntigo.get().getId()).toUri();
-            return ResponseEntity.ok().location(location).body(fromEntity(clienteAtual));
+                    .buildAndExpand(produtoAntigo.get().getId()).toUri();
+            return ResponseEntity.ok().location(location).body(fromEntity(produtoAtual));
         } else {
             throw new ResourceNotFoundException(id);
         }
@@ -107,8 +111,8 @@ public class ClienteController  implements Serializable {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") @Valid String id) {
         try {
-            Optional<Cliente> cliente = repository.findById(checkId(id));
-            if (cliente.isPresent()) {
+            Optional<Produto> produto = repository.findById(checkId(id));
+            if (produto.isPresent()) {
                 repository.deleteById(checkId(id));
                 return ResponseEntity.noContent().build();
             }
@@ -119,8 +123,8 @@ public class ClienteController  implements Serializable {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<ClienteDto>> findAllOrderBy(Pageable pageable,
-                        @RequestParam(value = "direction", defaultValue = "asc") String direction) {
+    public ResponseEntity<Page<ProdutoDto>> findAllOrderBy(Pageable pageable,
+                                                           @RequestParam(value = "direction", defaultValue = "asc") String direction) {
         Sort.Direction sortDirection;
         if (direction.equalsIgnoreCase("desc")) {
             sortDirection = Sort.Direction.DESC;
@@ -134,20 +138,20 @@ public class ClienteController  implements Serializable {
         if (pageable.getPageSize() > 100) {
             pageable = PageRequest.of(pageable.getPageNumber(), 100, sort);
         }
-        Page<ClienteDto> pageResult = repository.findAllOrderBy(pageable);
-        List<ClienteDto> dtos = pageResult.getContent().stream()
-                .map(ClienteDto::new)
+        Page<ProdutoDto> pageResult = repository.findAllOrderBy(pageable);
+        List<ProdutoDto> dtos = pageResult.getContent().stream()
+                .map(ProdutoDto::new)
                 .collect(Collectors.toList());
-        Page<ClienteDto> pageDto = new PageImpl<>(dtos, pageable, pageResult.getTotalElements());
+        Page<ProdutoDto> pageDto = new PageImpl<>(dtos, pageable, pageResult.getTotalElements());
         return ResponseEntity.ok().body(pageDto);
     }
 
 
     @GetMapping("/search")
-    public ResponseEntity<Page<ClienteDto>> buscaComFiltro(ClienteDto filtro,
+    public ResponseEntity<Page<ProdutoDto>> buscaComFiltro(ProdutoDto filtro,
                                                            @PageableDefault(size = 20, page = 0)
                                                            Pageable pageable, @RequestParam(value = "direction", defaultValue = "asc") String direction) {
-        validarFiltroClienteDto(filtro);
+        validarFiltroProdutoDto(filtro);
         Sort.Direction sortDirection;
         if (direction.equalsIgnoreCase("desc")) {
             sortDirection = Sort.Direction.DESC;
@@ -164,12 +168,12 @@ public class ClienteController  implements Serializable {
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-        Example<Cliente> example = Example.of(filtro.toEntity(), exampleMatcher);
-        Page<Cliente> page = repository.findAll(example, pageable);
-        List<ClienteDto> dtos = page.getContent().stream()
-                .map(ClienteDto::fromEntity)
+        Example<Produto> example = Example.of(filtro.toEntity(), exampleMatcher);
+        Page<Produto> page = repository.findAll(example, pageable);
+        List<ProdutoDto> dtos = page.getContent().stream()
+                .map(ProdutoDto::fromEntity)
                 .collect(Collectors.toList());
-        Page<ClienteDto> pageDto = new PageImpl<>(dtos, pageable, page.getTotalElements());
+        Page<ProdutoDto> pageDto = new PageImpl<>(dtos, pageable, page.getTotalElements());
         return ResponseEntity.ok(pageDto);
         //Teste: http://meu.dominio.interno:8080/api/clientes/search?email=example&page=0&sort=id&size=20&direction=desc
     }

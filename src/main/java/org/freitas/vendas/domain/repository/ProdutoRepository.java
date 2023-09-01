@@ -1,6 +1,10 @@
 package org.freitas.vendas.domain.repository;
 
+import org.freitas.vendas.domain.dto.ClienteDto;
+import org.freitas.vendas.domain.dto.ProdutoDto;
 import org.freitas.vendas.domain.entity.Produto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -10,4 +14,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 
 public interface ProdutoRepository extends JpaRepository<Produto, Integer> {
+    Page<ProdutoDto> findAllOrderBy(Pageable pageable);
 }

@@ -1,4 +1,4 @@
-package org.freitas.vendas.service;
+package org.freitas.vendas.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
