@@ -24,9 +24,10 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     private Integer id;
-
     @Column(name = "nome", length = 100, nullable = false)
     private String nome;
+    @Column(name = "cpf", length = 11)
+    private String cpf;
     private String email;
 
     @ToString.Exclude

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.freitas.vendas.domain.entity.Cliente;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.Email;
@@ -26,6 +27,8 @@ public class ClienteDto implements Serializable {
     Integer id;
     @NotBlank
     String nome;
+    @CPF(message = "Invalid CPF")
+    private String cpf;
     @Email(regexp = ".+@.+\\..+", message = "Email must be a well-formed email address")
     String email;
 
@@ -34,12 +37,14 @@ public class ClienteDto implements Serializable {
         this.id = cliente.getId();
         this.nome = cliente.getNome();
         this.email = cliente.getEmail();
+        this.cpf = cliente.getCpf();
     }
 
     public ClienteDto(ClienteDto dto) {
         this.id = dto.getId();
         this.nome = dto.getNome();
         this.email = dto.getEmail();
+        this.cpf = dto.getCpf();
     }
 
     public static ClienteDto fromEntity(Cliente cliente) {
@@ -47,13 +52,16 @@ public class ClienteDto implements Serializable {
         clienteDto.setId(cliente.getId());
         clienteDto.setNome(cliente.getNome());
         clienteDto.setEmail(cliente.getEmail());
+        clienteDto.setCpf(cliente.getCpf());
         return clienteDto;
     }
 
-    public String getEmail() {
-        if (email == null) {
-            return "";
-        }
-        return email;
+    public Cliente toEntity() {
+        Cliente cliente = new Cliente();
+        cliente.setId(id);
+        cliente.setNome(nome);
+        cliente.setEmail(email);
+        cliente.setCpf(cpf);
+        return cliente;
     }
 }

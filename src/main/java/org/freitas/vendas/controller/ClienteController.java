@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.freitas.vendas.domain.dto.ClienteDto.fromEntity;
-import static org.freitas.vendas.util.ValidationUtils.checkId;
+import static org.freitas.vendas.util.ValidationUtils.*;
 
 /**
  * @author Edson da Silva Freitas
@@ -42,8 +42,8 @@ public class ClienteController {
     /**
      * Retrieves a ClienteDto object by its ID.
      *
-     * @param  id    the ID of the ClienteDto object to retrieve
-     * @return       the ResponseEntity containing the ClienteDto object
+     * @param id the ID of the ClienteDto object to retrieve
+     * @return the ResponseEntity containing the ClienteDto object
      * @throws ResourceNotFoundException if the ClienteDto object is not found
      */
     @GetMapping("/{id}")
@@ -102,35 +102,41 @@ public class ClienteController {
     public ResponseEntity<Page<ClienteDto>> findAllOrderBy(
             @PageableDefault(size = 20, page = 0, sort = {"id"}) Pageable pageable,
             @RequestParam(value = "direction", defaultValue = "asc") String direction) {
-        if (pageable.getPageSize() > 20) {
-            pageable = PageRequest.of(pageable.getPageNumber(), 20);
-        }
-
+        validatePageable(pageable);
         Sort.Direction sortDirection;
         if (direction.equalsIgnoreCase("desc")) {
             sortDirection = Sort.Direction.DESC;
         } else {
             sortDirection = Sort.Direction.ASC;
         }
-
         Sort sort = Sort.by(pageable.getSort().stream()
                 .map(order -> Sort.Order.by(order.getProperty()).with(sortDirection))
                 .collect(Collectors.toList()));
-
         pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-
         Page<ClienteDto> page = repository.findAllOrderBy(pageable);
-
-        // Converte cada Cliente em ClienteDto
         List<ClienteDto> dtos = page.getContent().stream()
                 .map(ClienteDto::new)
                 .collect(Collectors.toList());
-
-        // Cria uma nova Page contendo os objetos ClienteDto
         Page<ClienteDto> pageDto = new PageImpl<>(dtos, pageable, page.getTotalElements());
-
         return ResponseEntity.ok().body(pageDto);
         //Teste: http://meu.dominio.interno:8080/api/clientes?sort=id&page=0&size=20&direction=desc
     }
 
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<ClienteDto>> buscaComFiltro(
+            ClienteDto filtro, @PageableDefault(size = 20, page = 0) Pageable pageable) {
+        validarFiltro(filtro);
+        validatePageable(pageable);
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example<Cliente> example = Example.of(filtro.toEntity(), exampleMatcher);
+        Page<Cliente> page = repository.findAll(example, pageable);
+        List<ClienteDto> dtos = page.getContent().stream()
+                .map(ClienteDto::fromEntity)
+                .collect(Collectors.toList());
+        Page<ClienteDto> pageDto = new PageImpl<>(dtos, pageable, page.getTotalElements());
+        return ResponseEntity.ok(pageDto);
+    }
 }
