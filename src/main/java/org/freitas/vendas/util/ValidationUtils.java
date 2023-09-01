@@ -2,8 +2,6 @@ package org.freitas.vendas.util;
 
 import org.freitas.vendas.domain.dto.ClienteDto;
 import org.freitas.vendas.service.ResourceNotFoundException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 /**
  * @author Edson da Silva Freitas
@@ -22,14 +20,6 @@ public class ValidationUtils {
         }
         return Integer.parseInt(id);
     }
-
-    public static Pageable validatePageable(Pageable pageable) {
-        if (pageable.getPageSize() > 20) {
-            pageable = PageRequest.of(pageable.getPageNumber(), 20);
-        }
-        return pageable;
-    }
-
 
     public static void validarFiltro(ClienteDto filtro) {
         if (filtro == null) {

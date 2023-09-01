@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -65,6 +66,23 @@ public class ClienteController {
         return ResponseEntity.created(location).body(fromEntity(clienteSalvo));
     }
 
+    @PostMapping("/bulk")
+    public ResponseEntity<List<ClienteDto>> saveAll(@Valid @RequestBody List<ClienteDto> novosClientes) {
+        List<Cliente> clientes = novosClientes.stream()
+                .map(dto -> {
+                    Cliente cliente = new Cliente();
+                    ModelMapper modelMapper = new ModelMapper();
+                    modelMapper.getConfiguration().setSkipNullEnabled(true);
+                    modelMapper.map(dto, cliente);
+                    return cliente;
+                })
+                .collect(Collectors.toList());
+        List<Cliente> clientesSalvos = repository.saveAll(clientes);
+        List<ClienteDto> dtos = clientesSalvos.stream()
+                .map(ClienteDto::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.CREATED).body(dtos);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ClienteDto> update(@Valid @RequestBody ClienteDto clienteAtualizado, @PathVariable @Valid String id) {
@@ -98,11 +116,11 @@ public class ClienteController {
         }
     }
 
-    @GetMapping()
+/*    @GetMapping()
     public ResponseEntity<Page<ClienteDto>> findAllOrderBy(
             @PageableDefault(size = 20, page = 0, sort = {"id"}) Pageable pageable,
             @RequestParam(value = "direction", defaultValue = "asc") String direction) {
-        validatePageable(pageable);
+        pageable = validatePageable(pageable);
         Sort.Direction sortDirection;
         if (direction.equalsIgnoreCase("desc")) {
             sortDirection = Sort.Direction.DESC;
@@ -120,14 +138,51 @@ public class ClienteController {
         Page<ClienteDto> pageDto = new PageImpl<>(dtos, pageable, page.getTotalElements());
         return ResponseEntity.ok().body(pageDto);
         //Teste: http://meu.dominio.interno:8080/api/clientes?sort=id&page=0&size=20&direction=desc
+    }*/
+
+    @GetMapping()
+    public ResponseEntity<Page<ClienteDto>> findAllOrderBy(Pageable pageable,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction) {
+        Sort.Direction sortDirection;
+        if (direction.equalsIgnoreCase("desc")) {
+            sortDirection = Sort.Direction.DESC;
+        } else {
+            sortDirection = Sort.Direction.ASC;
+        }
+        Sort sort = Sort.by(pageable.getSort().stream()
+                .map(order -> Sort.Order.by(order.getProperty()).with(sortDirection))
+                .collect(Collectors.toList()));
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        if (pageable.getPageSize() > 100) {
+            pageable = PageRequest.of(pageable.getPageNumber(), 100, sort);
+        }
+        Page<ClienteDto> pageResult = repository.findAllOrderBy(pageable);
+        List<ClienteDto> dtos = pageResult.getContent().stream()
+                .map(ClienteDto::new)
+                .collect(Collectors.toList());
+        Page<ClienteDto> pageDto = new PageImpl<>(dtos, pageable, pageResult.getTotalElements());
+        return ResponseEntity.ok().body(pageDto);
     }
 
 
     @GetMapping("/search")
-    public ResponseEntity<Page<ClienteDto>> buscaComFiltro(
-            ClienteDto filtro, @PageableDefault(size = 20, page = 0) Pageable pageable) {
+    public ResponseEntity<Page<ClienteDto>> buscaComFiltro(ClienteDto filtro,
+            @PageableDefault(size = 20, page = 0)
+            Pageable pageable, @RequestParam(value = "direction", defaultValue = "asc") String direction) {
         validarFiltro(filtro);
-        validatePageable(pageable);
+        Sort.Direction sortDirection;
+        if (direction.equalsIgnoreCase("desc")) {
+            sortDirection = Sort.Direction.DESC;
+        } else {
+            sortDirection = Sort.Direction.ASC;
+        }
+        Sort sort = Sort.by(pageable.getSort().stream()
+                .map(order -> Sort.Order.by(order.getProperty()).with(sortDirection))
+                .collect(Collectors.toList()));
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        if (pageable.getPageSize() > 100) {
+            pageable = PageRequest.of(pageable.getPageNumber(), 100, sort);
+        }
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
@@ -138,5 +193,6 @@ public class ClienteController {
                 .collect(Collectors.toList());
         Page<ClienteDto> pageDto = new PageImpl<>(dtos, pageable, page.getTotalElements());
         return ResponseEntity.ok(pageDto);
+        //Teste: http://meu.dominio.interno:8080/api/clientes/search?email=example&page=0&sort=id&size=20&direction=desc
     }
 }
