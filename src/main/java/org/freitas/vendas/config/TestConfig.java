@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 /**
@@ -60,26 +61,12 @@ public class TestConfig implements CommandLineRunner {
         Cliente c4 = Cliente.builder().nome("Bianca Souza").build();
         Cliente c5 = Cliente.builder().nome("Bianca Xim").build();
         Produto prod1 = Produto.builder().descricao("Produto 1").preco(BigDecimal.valueOf(10)).build();
-        Pedido ped1 = Pedido.builder().cliente(c1).dataPedido(LocalDate.now()).total(BigDecimal.valueOf(100)).build();
+        Pedido ped1 = Pedido.builder().cliente(c1).dataPedido(LocalDateTime.now()).total(BigDecimal.valueOf(100)).build();
         ItemPedido ip1 = ItemPedido.builder().pedido(ped1).produto(prod1).quantidade(1).build();
         ped1.addItemPedido(ip1);
         clienteRepository.saveAll(Arrays.asList(c1, c2, c3, c4, c5));
         produtoRepository.saveAll(Arrays.asList(prod1));
         pedidoRepository.saveAll(Arrays.asList(ped1));
         itemPedidoRepository.saveAll(Arrays.asList(ip1));
-    //    listarTodos(clienteRepository, null);
-
-        /*System.out.println("Cliente: "+ped1.getCliente() +
-                " Pedido: "+ped1.getDataPedido()+
-                " Item Pedido: "+ip1.getProduto().getDescricao()+
-                " Total: "+ped1.getTotal());*/
-
-        /*System.out.println("Iniciando fetch para obter os pedidos a partir do cliente");
-        final Cliente clienteFetchPedidos = clienteRepository.findClienteFetchPedidos(1);
-        System.out.println(clienteFetchPedidos);
-       System.out.println(clienteFetchPedidos.getPedidos());
-*/
-     //   pedidoRepository.findByCliente(c1).forEach(p -> System.out.println("Pedidos do cliente id 1: " + p));
-
     }
 }

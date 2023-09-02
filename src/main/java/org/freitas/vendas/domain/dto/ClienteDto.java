@@ -1,5 +1,6 @@
 package org.freitas.vendas.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClienteDto implements Serializable {
     private static final long serialVersionUID = -2232353118201999305L;
 

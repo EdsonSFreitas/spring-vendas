@@ -5,9 +5,7 @@ import org.freitas.vendas.domain.entity.Produto;
 import org.freitas.vendas.domain.repository.ProdutoRepository;
 import org.freitas.vendas.exceptions.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -30,7 +28,6 @@ public class ProdutoService implements Serializable {
 
     private final transient ProdutoRepository repository;
 
-    @Autowired
     public ProdutoService(ProdutoRepository repository) {
         this.repository = repository;
     }

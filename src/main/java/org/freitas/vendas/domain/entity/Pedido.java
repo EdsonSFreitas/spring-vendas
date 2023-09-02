@@ -1,11 +1,10 @@
 package org.freitas.vendas.domain.entity;
 
 import lombok.*;
-import lombok.experimental.FieldNameConstants;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -31,7 +30,7 @@ public class Pedido {
     private Cliente cliente;
 
     @Column(name = "data_pedido")
-    private LocalDate dataPedido;
+    private LocalDateTime dataPedido;
 
     @Column(name = "total", length = 20, precision = 20, scale = 2)
     private BigDecimal total;
@@ -49,6 +48,9 @@ public class Pedido {
     }
 
     public Set<ItemPedido> getItens() {
+        if (itens == null) {
+            this.itens = new HashSet<>();
+        }
         return Collections.unmodifiableSet(itens);
     }
 

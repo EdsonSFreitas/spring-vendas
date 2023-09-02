@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -19,7 +20,8 @@ import java.util.Objects;
 @Builder
 @Entity
 @Table(name = "tb_item_pedido")
-public class ItemPedido {
+public class ItemPedido implements Serializable {
+    private static final long serialVersionUID = -6655812218128169211L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

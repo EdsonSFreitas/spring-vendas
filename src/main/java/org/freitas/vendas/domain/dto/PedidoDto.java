@@ -1,18 +1,22 @@
 package org.freitas.vendas.domain.dto;
 
-import lombok.Value;
-import org.freitas.vendas.domain.dto.ClienteDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.List;
 
 /**
  * DTO for {@link org.freitas.vendas.domain.entity.Pedido}
  */
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PedidoDto implements Serializable {
-    ClienteDto cliente;
-    LocalDate dataPedido;
+    private static final long serialVersionUID = -7926241217490407133L;
+    Integer cliente;
     BigDecimal total;
+    List<ItemPedidoDto> items;
 }

@@ -45,6 +45,9 @@ public class Cliente {
     }
 
     public Set<Pedido> getPedidos() {
+        if(pedidos == null){
+            this.pedidos = new HashSet<>();
+        }
         return Collections.unmodifiableSet(pedidos);
     }
 

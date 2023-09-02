@@ -1,12 +1,12 @@
 package org.freitas.vendas.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.freitas.vendas.domain.entity.Produto;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProdutoDto implements Serializable {
     private static final long serialVersionUID = 5105059052176361094L;
     private Integer id;

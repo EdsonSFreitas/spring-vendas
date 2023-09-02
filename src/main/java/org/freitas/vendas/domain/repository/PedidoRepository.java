@@ -20,5 +20,4 @@ import java.util.Set;
  */
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
-    Set<Pedido> findByCliente(Cliente cliente);
 }

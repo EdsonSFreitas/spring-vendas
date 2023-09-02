@@ -6,9 +6,9 @@ import org.freitas.vendas.domain.repository.ProdutoRepository;
 import org.freitas.vendas.exceptions.DatabaseException;
 import org.freitas.vendas.exceptions.ResourceNotFoundException;
 import org.freitas.vendas.service.ProdutoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +20,9 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.freitas.vendas.domain.dto.ProdutoDto.fromEntity;
 import static org.freitas.vendas.util.ValidationUtils.checkId;
-import static org.freitas.vendas.util.ValidationUtils.validarFiltroProdutoDto;
 
 /**
  * @author Edson da Silva Freitas
@@ -38,8 +36,7 @@ public class ProdutoController implements Serializable {
 
     private final transient ProdutoService service;
 
-    @Autowired
-    public ProdutoController(ProdutoRepository repository, ProdutoService service) {
+    public ProdutoController(ProdutoService service) {
         this.service = service;
     }
 
@@ -84,9 +81,9 @@ public class ProdutoController implements Serializable {
     public ResponseEntity<Void> delete(@PathVariable(value = "id") @Valid String id) {
         try {
             Optional<Produto> produto = service.getProdutoById(checkId(id));
-            if (produto.isPresent()){
-                    service.deleteById(produto.get().getId());
-                    return ResponseEntity.noContent().build();
+            if (produto.isPresent()) {
+                service.deleteById(produto.get().getId());
+                return ResponseEntity.noContent().build();
             }
             return ResponseEntity.notFound().build();
         } catch (DataIntegrityViolationException e) {
@@ -96,15 +93,16 @@ public class ProdutoController implements Serializable {
 
     @GetMapping()
     public ResponseEntity<Page<ProdutoDto>> findAllOrderBy(Pageable pageable,
-           @RequestParam(value = "direction", defaultValue = "asc") String direction) {
+                                                           @RequestParam(value = "direction", defaultValue = "asc") String direction) {
         return ResponseEntity.ok().body(service.findAllOrderBy(pageable, direction));
     }
 
     @GetMapping("/search")
     public ResponseEntity<Page<ProdutoDto>> buscaComFiltro(ProdutoDto filtro,
-            @PageableDefault(size = 100, page = 0)
-            Pageable pageable, @RequestParam(value = "direction", defaultValue = "asc") String direction) {
+                                                           @PageableDefault(size = 100, page = 0)
+                                                           Pageable pageable, @RequestParam(value = "direction", defaultValue = "asc") String direction) {
         return ResponseEntity.ok(service.buscaComFiltro(filtro, pageable, direction));
         //Teste: http://meu.dominio.interno:8080/api/clientes/search?email=example&page=0&sort=id&size=20&direction=desc
     }
+
 }
