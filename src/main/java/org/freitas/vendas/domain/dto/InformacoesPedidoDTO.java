@@ -25,5 +25,6 @@ public class InformacoesPedidoDTO {
     private BigDecimal total;
     //private LocalDateTime dataPedido;
     private String dataPedido;
+    private String status;
     private Set<InformacoesItemPedidoDTO> items;
 }

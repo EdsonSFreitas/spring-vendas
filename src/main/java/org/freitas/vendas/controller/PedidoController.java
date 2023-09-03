@@ -1,10 +1,12 @@
 package org.freitas.vendas.controller;
 
+import org.freitas.vendas.domain.dto.AtualizaStatusPedido;
 import org.freitas.vendas.domain.dto.InformacoesItemPedidoDTO;
 import org.freitas.vendas.domain.dto.InformacoesPedidoDTO;
 import org.freitas.vendas.domain.dto.PedidoDto;
 import org.freitas.vendas.domain.entity.ItemPedido;
 import org.freitas.vendas.domain.entity.Pedido;
+import org.freitas.vendas.domain.enums.StatusPedido;
 import org.freitas.vendas.exceptions.ResourceNotFoundException;
 import org.freitas.vendas.service.PedidoService;
 import org.springframework.http.HttpStatus;
@@ -41,6 +43,21 @@ public class PedidoController implements Serializable {
                 .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
+    @PatchMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateStatus(@PathVariable Integer id,
+                             @RequestBody AtualizaStatusPedido dto) {
+        final String novoStatus = dto.getNovoStatus();
+        service.atualizaStatus(id, StatusPedido.valueOf(novoStatus));
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Integer save(@RequestBody PedidoDto dto) {
+        Pedido pedido = service.salvar(dto);
+        return pedido.getId();
+    }
+
     private InformacoesPedidoDTO converterPedidoDto(Pedido pedido) {
         //Com Mapper return modelMapper.map(pedido, InformacoesPedidoDTO.class);
         return InformacoesPedidoDTO.builder()
@@ -49,6 +66,7 @@ public class PedidoController implements Serializable {
                 .cpf(pedido.getCliente().getCpf())
                 .nomeCliente(pedido.getCliente().getNome())
                 .total(pedido.getTotal())
+                .status(pedido.getStatus().name())
                 .items(converterItemPedidoDto(pedido.getItens()))
                 .build();
     }
@@ -63,13 +81,4 @@ public class PedidoController implements Serializable {
                 .precoUnitario(item.getProduto().getPreco())
                 .quantidade(item.getQuantidade()).build()).collect(Collectors.toSet());
     }
-
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Integer save(@RequestBody PedidoDto dto) {
-        Pedido pedido = service.salvar(dto);
-        return pedido.getId();
-    }
-
 }

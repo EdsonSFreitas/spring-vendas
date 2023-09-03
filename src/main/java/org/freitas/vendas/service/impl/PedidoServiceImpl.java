@@ -7,11 +7,14 @@ import org.freitas.vendas.domain.entity.Cliente;
 import org.freitas.vendas.domain.entity.ItemPedido;
 import org.freitas.vendas.domain.entity.Pedido;
 import org.freitas.vendas.domain.entity.Produto;
+import org.freitas.vendas.domain.enums.StatusPedido;
 import org.freitas.vendas.domain.repository.ClienteRepository;
 import org.freitas.vendas.domain.repository.ItemPedidoRepository;
 import org.freitas.vendas.domain.repository.PedidoRepository;
 import org.freitas.vendas.domain.repository.ProdutoRepository;
 import org.freitas.vendas.exceptions.BusinessRuleException;
+import org.freitas.vendas.exceptions.PedidoNotFoundException;
+import org.freitas.vendas.exceptions.ResourceNotFoundException;
 import org.freitas.vendas.service.PedidoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +46,16 @@ public class PedidoServiceImpl implements PedidoService {
         return pedidoRepository.findByIdFetchItems(id);
     }
 
+    @Override
+    @Transactional
+    public void atualizaStatus(Integer id, StatusPedido statusPedido) {
+        pedidoRepository.findById(id)
+                .map(pedido -> {
+                    pedido.setStatus(statusPedido);
+                    return pedidoRepository.save(pedido);
+                }).orElseThrow(PedidoNotFoundException::new);
+    }
+
 
     @Override
     @Transactional
@@ -55,6 +68,8 @@ public class PedidoServiceImpl implements PedidoService {
         //pedido.setTotal(dto.getTotal());
         pedido.setDataPedido(LocalDateTime.now());
         pedido.setCliente(cliente);
+        pedido.setStatus(StatusPedido.REALIZADO);
+
         final Set<ItemPedido> itemsPedido = converterItems(pedido, dto.getItems());
         pedido.setTotal(pedido.getTotalPedido());
         pedidoRepository.save(pedido);

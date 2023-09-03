@@ -1,6 +1,7 @@
 package org.freitas.vendas.domain.entity;
 
 import lombok.*;
+import org.freitas.vendas.domain.enums.StatusPedido;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -34,6 +35,10 @@ public class Pedido {
 
     @Column(name = "total", length = 20, precision = 20, scale = 2)
     private BigDecimal total;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20)
+    private StatusPedido status;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     @ToString.Exclude
