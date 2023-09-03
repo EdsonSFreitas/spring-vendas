@@ -5,6 +5,7 @@ import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -30,11 +31,16 @@ public class ItemPedido implements Serializable {
     @JoinColumn(name = "pedido_id")
     private Pedido pedido;
 
-    @ManyToOne
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id")
+    @ToString.Exclude
     private Produto produto;
 
     private Integer quantidade;
+
+    public BigDecimal getSubTotal(){//new
+        return produto.getPreco().multiply(new BigDecimal(quantidade));
+    }
 
     @Override
     public final boolean equals(Object o) {

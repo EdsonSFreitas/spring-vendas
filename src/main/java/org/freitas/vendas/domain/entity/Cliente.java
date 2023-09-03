@@ -31,7 +31,6 @@ public class Cliente {
     private String email;
 
     @ToString.Exclude
-    @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private Set<Pedido> pedidos = new HashSet<>();
 

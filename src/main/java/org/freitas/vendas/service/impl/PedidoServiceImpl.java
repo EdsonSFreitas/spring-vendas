@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,17 +39,24 @@ public class PedidoServiceImpl implements PedidoService {
 
 
     @Override
+    public Optional<Pedido> obterPedidoCompleto(Integer id) {
+        return pedidoRepository.findByIdFetchItems(id);
+    }
+
+
+    @Override
     @Transactional
     public Pedido salvar(PedidoDto dto) {
-        final Integer idCliente = dto.getCliente();
+        final Integer idCliente = dto.getIdCliente();
         Cliente cliente = clienteRepository.
                 findById(idCliente)
                 .orElseThrow(() -> new RuntimeException("Código de Cliente não encontrado"));
         Pedido pedido = new Pedido();
-        pedido.setTotal(dto.getTotal());
+        //pedido.setTotal(dto.getTotal());
         pedido.setDataPedido(LocalDateTime.now());
         pedido.setCliente(cliente);
         final Set<ItemPedido> itemsPedido = converterItems(pedido, dto.getItems());
+        pedido.setTotal(pedido.getTotalPedido());
         pedidoRepository.save(pedido);
         itemPedidoRepository.saveAll(itemsPedido);
         pedido.setItens(itemsPedido);
@@ -60,7 +68,7 @@ public class PedidoServiceImpl implements PedidoService {
             throw new BusinessRuleException("O pedido deve conter pelo menos um item");
         }
         return items.stream().map(dto -> {
-            final Integer idProduto = dto.getProduto();
+            final Integer idProduto = dto.getIdProduto();
             Produto produto = produtoRepository.findById(idProduto)
                     .orElseThrow(() -> new BusinessRuleException("Produto não encontrado: " + idProduto));
 

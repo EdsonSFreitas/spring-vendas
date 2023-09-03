@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PedidoDto implements Serializable {
     private static final long serialVersionUID = -7926241217490407133L;
-    Integer cliente;
+    Integer idCliente;
     BigDecimal total;
     List<ItemPedidoDto> items;
 }

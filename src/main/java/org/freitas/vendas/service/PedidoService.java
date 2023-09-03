@@ -4,6 +4,8 @@ import org.freitas.vendas.domain.dto.PedidoDto;
 import org.freitas.vendas.domain.entity.Pedido;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * @author Edson da Silva Freitas
  * {@code @created} 02/09/2023
@@ -12,4 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface PedidoService {
     Pedido salvar(PedidoDto dto);
+
+    Optional<Pedido> obterPedidoCompleto(Integer id);
 }

@@ -39,6 +39,14 @@ public class Pedido {
     @ToString.Exclude
     private Set<ItemPedido> itens = new HashSet<>();
 
+    public BigDecimal getTotalPedido() {//new
+        BigDecimal sum = BigDecimal.ZERO;
+        for (ItemPedido itemPedido : itens) {
+            sum = sum.add(itemPedido.getSubTotal());
+        }
+        return sum;
+    }
+
     public void addItemPedido(ItemPedido itemPedido) {
         Optional.ofNullable(this.itens).ifPresent(p -> p.add(itemPedido));
     }
