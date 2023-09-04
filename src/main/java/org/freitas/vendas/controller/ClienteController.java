@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -31,7 +32,7 @@ import static org.freitas.vendas.util.ValidationUtils.*;
  * {@code @project} spring-vendas
  */
 @RestController
-@RequestMapping("/api/clientes")
+@RequestMapping(value = "/api/clientes", consumes = MediaType.APPLICATION_JSON_VALUE)
 public class ClienteController  implements Serializable {
     private static final long serialVersionUID = 8553757501330900962L;
 

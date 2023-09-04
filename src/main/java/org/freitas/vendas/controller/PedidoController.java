@@ -10,9 +10,11 @@ import org.freitas.vendas.domain.enums.StatusPedido;
 import org.freitas.vendas.exceptions.ResourceNotFoundException;
 import org.freitas.vendas.service.PedidoService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
  * {@code @project} spring-vendas
  */
 @RestController
-@RequestMapping("/api/pedidos")
+@RequestMapping(value = "/api/pedidos", consumes = MediaType.APPLICATION_JSON_VALUE)
 public class PedidoController implements Serializable {
 
     private static final long serialVersionUID = -7985726640015917002L;
@@ -46,14 +48,14 @@ public class PedidoController implements Serializable {
     @PatchMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateStatus(@PathVariable Integer id,
-                             @RequestBody AtualizaStatusPedido dto) {
+                             @RequestBody @Valid AtualizaStatusPedido dto) {
         final String novoStatus = dto.getNovoStatus();
         service.atualizaStatus(id, StatusPedido.valueOf(novoStatus));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Integer save(@RequestBody PedidoDto dto) {
+    public Integer save(@RequestBody @Valid PedidoDto dto) {
         Pedido pedido = service.salvar(dto);
         return pedido.getId();
     }

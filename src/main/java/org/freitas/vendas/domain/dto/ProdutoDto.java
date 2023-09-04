@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.freitas.vendas.domain.entity.Produto;
 
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -23,7 +24,13 @@ import java.math.BigDecimal;
 public class ProdutoDto implements Serializable {
     private static final long serialVersionUID = 5105059052176361094L;
     private Integer id;
+
+    @NotBlank(message = "Descrição não pode ser nula")
     private String descricao;
+
+    @NotNull(message = "Preço não pode ser nulo")
+    @PositiveOrZero(message = "Preço não pode ser negativo")
+    @Digits(integer = 10, fraction = 2, message = "Preço com valor invalido ou nulo")
     private BigDecimal preco;
 
     public ProdutoDto(Produto produto) {

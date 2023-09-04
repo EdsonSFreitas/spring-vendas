@@ -11,11 +11,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.Optional;
 
 import static org.freitas.vendas.domain.dto.ProdutoDto.fromEntity;
 import static org.freitas.vendas.util.ValidationUtils.checkId;
+import static org.springframework.http.ResponseEntity.badRequest;
 
 /**
  * @author Edson da Silva Freitas
@@ -30,7 +33,7 @@ import static org.freitas.vendas.util.ValidationUtils.checkId;
  * {@code @project} spring-vendas
  */
 @RestController
-@RequestMapping("/api/produtos")
+@RequestMapping(value = "/api/produtos", consumes = MediaType.APPLICATION_JSON_VALUE)
 public class ProdutoController implements Serializable {
     private static final long serialVersionUID = 6178785521518463717L;
 
@@ -56,6 +59,9 @@ public class ProdutoController implements Serializable {
 
     @PostMapping()
     public ResponseEntity<ProdutoDto> save(@Valid @RequestBody ProdutoDto novoProduto) {
+        if (novoProduto == null) {
+            throw new ResourceNotFoundException("Corpo da requisição ausente ou inválido");
+        }
         ProdutoDto produtoSalvo = service.save(novoProduto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(produtoSalvo.getId()).toUri();

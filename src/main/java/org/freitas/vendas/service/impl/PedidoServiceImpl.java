@@ -14,7 +14,6 @@ import org.freitas.vendas.domain.repository.PedidoRepository;
 import org.freitas.vendas.domain.repository.ProdutoRepository;
 import org.freitas.vendas.exceptions.BusinessRuleException;
 import org.freitas.vendas.exceptions.PedidoNotFoundException;
-import org.freitas.vendas.exceptions.ResourceNotFoundException;
 import org.freitas.vendas.service.PedidoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,8 +60,8 @@ public class PedidoServiceImpl implements PedidoService {
     @Transactional
     public Pedido salvar(PedidoDto dto) {
         final Integer idCliente = dto.getIdCliente();
-        Cliente cliente = clienteRepository.
-                findById(idCliente)
+        Cliente cliente = clienteRepository
+                .findById(idCliente)
                 .orElseThrow(() -> new RuntimeException("Código de Cliente não encontrado"));
         Pedido pedido = new Pedido();
         //pedido.setTotal(dto.getTotal());

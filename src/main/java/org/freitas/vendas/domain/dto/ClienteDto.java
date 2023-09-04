@@ -11,6 +11,7 @@ import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
@@ -25,7 +26,8 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClienteDto implements Serializable {
     private static final long serialVersionUID = -2232353118201999305L;
-
+    @NotNull(message = "Codigo do cliente não pode ser nulo")
+    @Positive(message = "Codigo do cliente não pode ser negativo")
     Integer id;
     @NotBlank
     String nome;
