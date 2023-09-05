@@ -25,13 +25,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
                 .passwordEncoder(passwordEncoder())
-                .withUser("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMIN");
+                .withUser("user")
+                .password(passwordEncoder().encode("user"))
+                .roles("USER", "ADMIN");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/api/clientes/**")
+                .hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/pedidos/**")
+                .hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/produtos/**")
+                .hasRole("ADMIN")
+                .and()
+                .formLogin();
     }
 }
