@@ -32,7 +32,7 @@ import static org.freitas.vendas.util.ValidationUtils.*;
  * {@code @project} spring-vendas
  */
 @RestController
-@RequestMapping(value = "/api/clientes", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/clientes")
 public class ClienteController  implements Serializable {
     private static final long serialVersionUID = 8553757501330900962L;
 

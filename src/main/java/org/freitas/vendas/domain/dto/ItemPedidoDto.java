@@ -19,11 +19,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class ItemPedidoDto implements Serializable {
     private static final long serialVersionUID = -9169151759132003742L;
-    @NotNull(message = "Produto não pode ser nulo")
-    @Positive(message = "Produto não pode ser negativo")
+    @NotNull(message = "{field.produto.obrigatorio}")
+    @Positive(message = "{field.produto.negativo}")
     Integer idProduto;
-    @NotNull(message = "Quantidade não pode ser nulo")
-    @Positive(message = "Quantidade não pode ser negativo")
+    @NotNull(message = "{field.quantidade.obrigatorio}")
+    @Positive(message = "{field.quantidade.negativo}")
     Integer quantidade;
     BigDecimal precoTotal;//new
 

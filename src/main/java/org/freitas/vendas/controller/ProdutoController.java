@@ -33,7 +33,7 @@ import static org.springframework.http.ResponseEntity.badRequest;
  * {@code @project} spring-vendas
  */
 @RestController
-@RequestMapping(value = "/api/produtos", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/produtos")
 public class ProdutoController implements Serializable {
     private static final long serialVersionUID = 6178785521518463717L;
 

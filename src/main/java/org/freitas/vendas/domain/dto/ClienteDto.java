@@ -26,14 +26,12 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClienteDto implements Serializable {
     private static final long serialVersionUID = -2232353118201999305L;
-    @NotNull(message = "Codigo do cliente não pode ser nulo")
-    @Positive(message = "Codigo do cliente não pode ser negativo")
     Integer id;
     @NotBlank
     String nome;
-    @CPF(message = "Invalid CPF")
+    @CPF(message = "{field.cpf.cliente.invalido}")
     private String cpf;
-    @Email(regexp = ".+@.+\\..+", message = "Email must be a well-formed email address")
+    @Email(regexp = ".+@.+\\..+", message = "{field.email.invalido}")
     String email;
 
 

@@ -25,12 +25,12 @@ public class ProdutoDto implements Serializable {
     private static final long serialVersionUID = 5105059052176361094L;
     private Integer id;
 
-    @NotBlank(message = "Descrição não pode ser nula")
+    @NotBlank(message = "{field.descricao.obrigatorio}")
     private String descricao;
 
-    @NotNull(message = "Preço não pode ser nulo")
-    @PositiveOrZero(message = "Preço não pode ser negativo")
-    @Digits(integer = 10, fraction = 2, message = "Preço com valor invalido ou nulo")
+    @NotNull(message = "{field.preco.obrigatorio}")
+    @PositiveOrZero(message = "{field.preco.negativo}")
+    @Digits(integer = 10, fraction = 2, message = "{field.preco.invalido}")
     private BigDecimal preco;
 
     public ProdutoDto(Produto produto) {
