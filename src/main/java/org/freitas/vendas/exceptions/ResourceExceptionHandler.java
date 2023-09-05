@@ -2,6 +2,7 @@ package org.freitas.vendas.exceptions;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.Getter;
+import org.freitas.vendas.config.InternacionalizacaoConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +28,9 @@ import java.util.stream.Collectors;
  */
 @ControllerAdvice
 public class ResourceExceptionHandler {
+
+    InternacionalizacaoConfig configInternacionalizacao = new InternacionalizacaoConfig();
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request) {
         String error = "Resource not found";
@@ -70,7 +75,8 @@ public class ResourceExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ResponseEntity<StandardError> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
-        String error = "Method not allowed";
+        Locale locale = request.getLocale();
+        String error = configInternacionalizacao.messageSource().getMessage("method.controller.notAllowed", null, locale);
         HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
         StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
@@ -78,7 +84,8 @@ public class ResourceExceptionHandler {
 
     @ExceptionHandler(BusinessRuleException.class)
     public ResponseEntity<StandardError> handleBusinessRuleException(BusinessRuleException ex, HttpServletRequest request) {
-        String error = "Product id not found";
+        Locale locale = request.getLocale();
+        String error = configInternacionalizacao.messageSource().getMessage("field.produto.obrigatorio", null, locale);
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
@@ -86,11 +93,12 @@ public class ResourceExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> handleHttpMessageNotReadableAndError400(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        Locale locale = request.getLocale();
         Throwable mostSpecificCause = ex.getMostSpecificCause();
         if (mostSpecificCause instanceof InvalidFormatException) {
             InvalidFormatException invalidFormatException = (InvalidFormatException) mostSpecificCause;
             if (invalidFormatException.getTargetType() == BigDecimal.class) {
-                String error = "Preço deve ser um valor númerico";
+                String error = configInternacionalizacao.messageSource().getMessage("field.preco.invalido", null, locale);
                 HttpStatus status = HttpStatus.BAD_REQUEST;
                 StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
                 return ResponseEntity.status(status).body(err);
