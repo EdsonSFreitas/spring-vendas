@@ -1,7 +1,9 @@
 package org.freitas.vendas.service.impl;
 
+import org.freitas.vendas.domain.dto.UsuarioDto;
 import org.freitas.vendas.domain.entity.Usuario;
 import org.freitas.vendas.domain.repository.UsuarioRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.User;
@@ -27,6 +29,7 @@ public class UsuarioServiceImpl implements UserDetailsService {
     private PasswordEncoder encoder;
 
     private final UsuarioRepository repository;
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     public UsuarioServiceImpl(UsuarioRepository repository) {
@@ -34,8 +37,8 @@ public class UsuarioServiceImpl implements UserDetailsService {
     }
 
     @Transactional
-    public Usuario salvar(@Valid Usuario usuarioDto) {
-        return repository.save(usuarioDto);
+    public void salvar(@Valid Usuario usuario) {
+        repository.save(usuario);
     }
 
     @Override

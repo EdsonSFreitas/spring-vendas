@@ -1,6 +1,7 @@
 package org.freitas.vendas.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.freitas.vendas.domain.dto.UsuarioDto;
 import org.freitas.vendas.domain.entity.Usuario;
 import org.freitas.vendas.service.impl.UsuarioServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -26,8 +27,12 @@ public class UsuarioController implements Serializable {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Usuario salvar(@Valid @RequestBody Usuario usuarioDto) {
-        usuarioDto.setSenha(encoder.encode(usuarioDto.getSenha()));
-        return usuarioService.salvar(usuarioDto);
+    public void salvar(@Valid @RequestBody UsuarioDto usuarioDto) {
+        Usuario usuario = Usuario.builder()
+                .login(usuarioDto.getLogin())
+                .senha(encoder.encode(usuarioDto.getSenha()))
+                .admin(usuarioDto.isAdmin())
+                .build();
+        usuarioService.salvar(usuario);
     }
 }
