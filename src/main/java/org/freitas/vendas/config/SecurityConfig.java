@@ -1,5 +1,7 @@
 package org.freitas.vendas.config;
 
+import org.freitas.vendas.service.impl.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private UserServiceImpl userService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -23,11 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .passwordEncoder(passwordEncoder())
-                .withUser("user")
-                .password(passwordEncoder().encode("user"))
-                .roles("USER", "ADMIN");
+        auth.
+                userDetailsService(userService)
+                .passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -41,6 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/produtos/**")
                 .hasRole("ADMIN")
                 .and()
-                .formLogin();
+                .httpBasic();
     }
 }
