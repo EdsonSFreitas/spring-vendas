@@ -1,6 +1,6 @@
 **Boas Práticas Adotadas Nessa API REST com Spring Framework Até o Momento:**
 
-Neste projeto estou aplicando uma série de boas práticas para garantir a qualidade e a eficiência do código da minha API REST baseada no Spring Framework. Estou aplicando técnicas diferentes para demostrar diversas maneiras de implementar os recursos explorados,  mas ciente de que um projeto em produção deve seguir um padrão de desenvolvimento. 
+Neste projeto estou aplicando uma série de boas práticas para garantir a qualidade e a eficiência do código da minha API REST baseada no Spring Framework. Estou aplicando técnicas diferentes para demostrar diversas maneiras de implementar os recursos explorados, mas ciente de que um projeto em produção deve seguir padrões de desenvolvimento definidos no escopo do projeto/equipe. 
 
 **1. Estrutura de Pacotes Organizada:** Mantenho uma estrutura de pacotes bem organizada, dividindo os componentes em controladores, serviços, repositórios e modelos (DTOs/Entidades).
 
@@ -10,7 +10,7 @@ Neste projeto estou aplicando uma série de boas práticas para garantir a quali
 
 **4. Validações de Entrada:** Implemento validações para garantir a integridade dos dados fornecidos pelos clientes da API.
 
-**5. Respostas HTTP Adequadas:** Utilizo os códigos de _status_ HTTP apropriados nas respostas da API, assegurando respostas claras e adequadas.
+**5. Respostas HTTP Adequadas:** Utilizo os códigos de status HTTP apropriados nas respostas da API, assegurando respostas claras e adequadas.
 
 **6. Tratamento de Exceções:** Implemento um tratamento de exceções personalizado para fornecer respostas apropriadas em caso de erros e evitar a exposição de detalhes técnicos.
 
@@ -26,7 +26,7 @@ Neste projeto estou aplicando uma série de boas práticas para garantir a quali
 
 **11. Testes Unitários:** Criarei os testes unitários para garantir a funcionalidade correta dos componentes da API, aumentando a confiabilidade do sistema.
 
-**12. Boas Práticas de Segurança:** Aplicarei implementações de segurança, incluindo autenticação, autorização e validação de token, para proteger a API contra ameaças. Também será aplicado configuração global para o CORS.
+**12. Boas Práticas de Segurança:** Aplicarei implementações de segurança, incluindo autenticação, autorização e validação de token, para proteger a API contra ameaças. Também será aplicado configuração global para o CORS. Aplicarei validação de complexidade de senha e validação se o username já está em uso no banco de dados. 
 
 **13. Monitoramento e Logs:** Integrarei registros de logs e métricas para facilitar a identificação e resolução de problemas operacionais.
 
