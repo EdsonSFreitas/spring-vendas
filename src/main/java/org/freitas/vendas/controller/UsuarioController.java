@@ -7,6 +7,7 @@ import org.freitas.vendas.service.impl.UsuarioServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.io.Serializable;
@@ -33,6 +34,12 @@ public class UsuarioController implements Serializable {
                 .senha(encoder.encode(usuarioDto.getSenha()))
                 .admin(usuarioDto.isAdmin())
                 .build();
-        usuarioService.salvar(usuario);
+        try {
+            usuarioService.salvar(usuario);
+        } catch (ResponseStatusException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error occurred.");
+        }
     }
 }

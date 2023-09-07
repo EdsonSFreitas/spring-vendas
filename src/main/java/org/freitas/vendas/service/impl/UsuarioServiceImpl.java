@@ -1,11 +1,12 @@
 package org.freitas.vendas.service.impl;
 
-import org.freitas.vendas.domain.dto.UsuarioDto;
 import org.freitas.vendas.domain.entity.Usuario;
 import org.freitas.vendas.domain.repository.UsuarioRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -24,20 +26,25 @@ import javax.validation.Valid;
 @Service
 public class UsuarioServiceImpl implements UserDetailsService {
 
+    private final UsuarioRepository repository;
+    private final MessageSource messageSource;
+
     @Autowired
     @Lazy
     private PasswordEncoder encoder;
 
-    private final UsuarioRepository repository;
-    private final ModelMapper modelMapper = new ModelMapper();
-
     @Autowired
-    public UsuarioServiceImpl(UsuarioRepository repository) {
+    public UsuarioServiceImpl(UsuarioRepository repository, MessageSource messageSource) {
         this.repository = repository;
+        this.messageSource = messageSource;
     }
 
     @Transactional
     public void salvar(@Valid Usuario usuario) {
+        repository.findByLogin(usuario.getLogin()).ifPresent(u -> {
+            String errorMessage = messageSource.getMessage("field.security.db.userNotAllowed", null, LocaleContextHolder.getLocale());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, errorMessage);
+        });
         repository.save(usuario);
     }
 

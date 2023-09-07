@@ -1,4 +1,4 @@
-package org.freitas.vendas.config;
+package org.freitas.vendas.security;
 
 import org.freitas.vendas.service.impl.UsuarioServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
