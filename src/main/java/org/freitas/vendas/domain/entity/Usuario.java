@@ -28,8 +28,8 @@ public class Usuario {
     private String login;
     @NotEmpty(message = "{field.senha.obrigatorio}")
     private String senha;
-
-    private boolean admin;
+    @Builder.Default
+    private boolean admin = false;
 
     @Override
     public final boolean equals(Object o) {

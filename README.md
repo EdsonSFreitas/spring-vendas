@@ -1,6 +1,6 @@
 **Boas Práticas Adotadas Nessa API REST com Spring Framework Até o Momento:**
 
-Neste projeto estou aplicando uma série de boas práticas para garantir a qualidade e a eficiência do código da minha API REST baseada no Spring Framework. Estou aplicando técnicas diferentes para demostrar diversas maneiras de implementar os recursos explorados, mas ciente de que um projeto em produção deve seguir padrões de desenvolvimento definidos no escopo do projeto/equipe. 
+Neste projeto estou aplicando uma série de boas práticas para garantir a qualidade e a eficiência do código da minha API REST baseada no Spring Framework. Estou aplicando técnicas diferentes para demostrar diversas maneiras de implementar os recursos explorados e algumas permissões foram propositalmente mantidas para facilitar o acesso como a console do h2 e o swagger, mas ciente de que um projeto em produção deve seguir padrões de desenvolvimento definidos no escopo do projeto/equipe. 
 
 **1. Estrutura de Pacotes Organizada:** Mantenho uma estrutura de pacotes bem organizada, dividindo os componentes em controladores, serviços, repositórios e modelos (DTOs/Entidades).
 
@@ -22,14 +22,16 @@ Neste projeto estou aplicando uma série de boas práticas para garantir a quali
 
 **10. Princípios SOLID:** Aplico os princípios SOLID (Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion) para manter meu código limpo e altamente modular.
 
+**11. Boas Práticas de Segurança:** Apliquei implementações de segurança, incluindo autenticação, autorização e validação de token, para proteger a API contra ameaças. Também apliquei configuração global para o CORS, validação de complexidade de senha e validação se o username já está em uso no banco de dados.
+
 ## Implementações pendentes:
 
-**11. Testes Unitários:** Criarei os testes unitários para garantir a funcionalidade correta dos componentes da API, aumentando a confiabilidade do sistema.
+** Max Retry, Bloqueio de usuario: ** Criar limite de tentativas de autenticação e bloquear usuário apóx X tentativas malsucedidas, registrar no banco as tentativas de autenticação malsucedidas etc.
 
-**12. Boas Práticas de Segurança:** Aplicarei implementações de segurança, incluindo autenticação, autorização e validação de token, para proteger a API contra ameaças. Também será aplicado configuração global para o CORS. Aplicarei validação de complexidade de senha e validação se o username já está em uso no banco de dados. 
+** Testes Unitários: ** Criar os testes unitários para garantir a funcionalidade correta dos componentes da API, aumentando a confiabilidade do sistema.
 
-**13. Monitoramento e Logs:** Integrarei registros de logs e métricas para facilitar a identificação e resolução de problemas operacionais.
+** Monitoramento e Logs: ** Integrar registros de logs e métricas para facilitar a identificação e resolução de problemas operacionais.
 
-**14. Versionamento da API:** Implementarei uma estratégia de versionamento da API para garantir compatibilidade com clientes existentes.
+** Versionamento da API: ** Implementar uma estratégia de versionamento da API para garantir compatibilidade com clientes existentes.
 
-**15. Documentação Clara:** Criarei uma documentação clara e abrangente da API, descrevendo o uso de cada recurso, parâmetros necessários e formatos de resposta.
+** Documentação Clara: ** Criar uma documentação clara e abrangente da API, descrevendo o uso de cada recurso, parâmetros necessários e formatos de resposta.

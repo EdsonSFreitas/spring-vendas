@@ -2,6 +2,7 @@ package org.freitas.vendas.service.impl;
 
 import org.freitas.vendas.domain.entity.Usuario;
 import org.freitas.vendas.domain.repository.UsuarioRepository;
+import org.freitas.vendas.exceptions.PasswordDoesNotMatchedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
@@ -50,8 +51,9 @@ public class UsuarioServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        String errorMessage = messageSource.getMessage("usuario.notfound.db", null, LocaleContextHolder.getLocale());
         final Usuario usuario = repository.findByLogin(username)
-                .orElseThrow(() -> new UsernameNotFoundException("{usuario.notfound.banco}"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, errorMessage));
         String[] roles = usuario.isAdmin() ? new String[]{"ADMIN", "USER"} : new String[]{"USER"};
 
         return User.builder()
@@ -59,5 +61,14 @@ public class UsuarioServiceImpl implements UserDetailsService {
                 .password(usuario.getSenha())
                 .roles(roles)
                 .build();
+    }
+
+    public UserDetails authenticate(Usuario usuario) {
+        final UserDetails user = loadUserByUsername(usuario.getLogin());
+        if (encoder.matches(usuario.getSenha(), user.getPassword())) {
+            return user;
+        }
+        String errorMessage = messageSource.getMessage("security.jwt.passwordDoesNotMatched", null, LocaleContextHolder.getLocale());
+        throw new PasswordDoesNotMatchedException(errorMessage);
     }
 }
