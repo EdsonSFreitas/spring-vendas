@@ -1,6 +1,7 @@
 package org.freitas.vendas.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,10 +28,13 @@ import java.io.Serializable;
 public class ClienteDto implements Serializable {
     private static final long serialVersionUID = -2232353118201999305L;
     Integer id;
+    @Schema(example = "Zé das Colves")
     @NotBlank
     String nome;
+    @Schema(example = "123456789")
     @CPF(message = "{field.cpf.cliente.invalido}")
     private String cpf;
+    @Schema(example = "ze@example.com")
     @Email(regexp = ".+@.+\\..+", message = "{field.email.invalido}")
     String email;
 

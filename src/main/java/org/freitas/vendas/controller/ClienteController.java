@@ -1,5 +1,10 @@
 package org.freitas.vendas.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.freitas.vendas.domain.dto.ClienteDto;
 import org.freitas.vendas.domain.entity.Cliente;
 import org.freitas.vendas.domain.repository.ClienteRepository;
@@ -12,7 +17,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,7 +32,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.freitas.vendas.domain.dto.ClienteDto.fromEntity;
-import static org.freitas.vendas.util.ValidationUtils.*;
+import static org.freitas.vendas.util.ValidationUtils.checkId;
+import static org.freitas.vendas.util.ValidationUtils.validarFiltroClienteDto;
 
 /**
  * @author Edson da Silva Freitas
@@ -36,16 +41,18 @@ import static org.freitas.vendas.util.ValidationUtils.*;
  * {@code @project} spring-vendas
  */
 @RestController
+@Tag(name = "Clientes", description = "Operações relacionadas aos clientes")
 @RequestMapping(value = "/api/clientes")
-public class ClienteController  implements Serializable {
+public class ClienteController implements Serializable {
     private static final long serialVersionUID = 8553757501330900962L;
 
-    private final ClienteRepository repository;
+    private final transient ClienteRepository repository;
 
     @Autowired
     public ClienteController(ClienteRepository repository) {
         this.repository = repository;
     }
+
 
     /**
      * Retrieves a ClienteDto object by its ID.
@@ -54,15 +61,33 @@ public class ClienteController  implements Serializable {
      * @return the ResponseEntity containing the ClienteDto object
      * @throws ResourceNotFoundException if the ClienteDto object is not found
      */
+    @Operation(summary = "${rest.cliente.findById}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "${rest.response.cliente.found}"),
+            @ApiResponse(responseCode = "403", description = "${rest.response.access.denied}"),
+            @ApiResponse(responseCode = "404", description = "${rest.response.cliente-notfound}"),
+            @ApiResponse(responseCode = "405", description = "${method.controller.notAllowed}"
+            )}
+    )
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteDto> getClienteById(@PathVariable(value = "id") String id) {
+    public ResponseEntity<ClienteDto> getClienteById(@PathVariable(value = "id")
+                                                     @Parameter(description = "id do cliente") String id) {
         Optional<Cliente> cliente = repository.findById(checkId(id));
         return cliente.map(value -> ResponseEntity.ok().body(ClienteDto.fromEntity(value)))
                 .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
+    /**
+     * @param novoCliente Informações do cliente. Exemplo: {"nome": "Ze das Colves", "cpf": "123456789", "email": "ze@example.com"}
+     */
+    @Operation(summary = "Registrar novo cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "${rest.response.cliente.found}"),
+            @ApiResponse(responseCode = "405", description = "${method.controller.notAllowed}")}
+    )
     @PostMapping()
-    public ResponseEntity<ClienteDto> save(@Valid @RequestBody ClienteDto novoCliente) {
+    public ResponseEntity<ClienteDto> save(
+            @Valid @RequestBody ClienteDto novoCliente) {
         Cliente cliente = new Cliente();
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
@@ -73,6 +98,11 @@ public class ClienteController  implements Serializable {
         return ResponseEntity.created(location).body(fromEntity(clienteSalvo));
     }
 
+    @Operation(summary = "Registrar massivo de novos clientes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "${rest.response.cliente.found}"),
+            @ApiResponse(responseCode = "405", description = "${method.controller.notAllowed}")}
+    )
     @PostMapping("/bulk")
     public ResponseEntity<List<ClienteDto>> saveAll(@Valid @RequestBody List<ClienteDto> novosClientes) {
         List<Cliente> clientes = novosClientes.stream()
@@ -91,6 +121,11 @@ public class ClienteController  implements Serializable {
         return ResponseEntity.status(HttpStatus.CREATED).body(dtos);
     }
 
+    @Operation(summary = "Atualizar registro de cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "${rest.response.cliente.found}"),
+            @ApiResponse(responseCode = "405", description = "${method.controller.notAllowed}")}
+    )
     @PutMapping("/{id}")
     public ResponseEntity<ClienteDto> update(@Valid @RequestBody ClienteDto clienteAtualizado, @PathVariable @Valid String id) {
         Optional<Cliente> clienteAntigo = repository.findById(checkId(id));
@@ -109,6 +144,11 @@ public class ClienteController  implements Serializable {
     }
 
 
+    @Operation(summary = "Excluir registro de cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "${rest.response.cliente.found}"),
+            @ApiResponse(responseCode = "405", description = "${method.controller.notAllowed}")}
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") @Valid String id) {
         try {
@@ -123,9 +163,14 @@ public class ClienteController  implements Serializable {
         }
     }
 
+    @Operation(summary = "Buscar registro de cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "${rest.response.cliente.found}"),
+            @ApiResponse(responseCode = "405", description = "${method.controller.notAllowed}")}
+    )
     @GetMapping()
     public ResponseEntity<Page<ClienteDto>> findAllOrderBy(Pageable pageable,
-                        @RequestParam(value = "direction", defaultValue = "asc") String direction) {
+                                                           @RequestParam(value = "direction", defaultValue = "asc") String direction) {
         Sort.Direction sortDirection;
         if (direction.equalsIgnoreCase("desc")) {
             sortDirection = Sort.Direction.DESC;
@@ -148,6 +193,11 @@ public class ClienteController  implements Serializable {
     }
 
 
+    @Operation(summary = "Buscar cliente em todos atributos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "${rest.response.cliente.found}"),
+            @ApiResponse(responseCode = "405", description = "${method.controller.notAllowed}")}
+    )
     @GetMapping("/search")
     public ResponseEntity<Page<ClienteDto>> buscaComFiltro(ClienteDto filtro,
                                                            @PageableDefault(size = 20, page = 0)
