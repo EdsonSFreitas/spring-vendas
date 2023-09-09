@@ -24,6 +24,8 @@ Neste projeto estou aplicando uma série de boas práticas para garantir a quali
 
 **11. Boas Práticas de Segurança:** Apliquei implementações de segurança, incluindo autenticação, autorização e validação de token, para proteger a API contra ameaças. Também apliquei configuração global para o CORS, validação de complexidade de senha e validação se o username já está em uso no banco de dados.
 
+**12. Documentação Clara:** Implementei springdoc-openapi-ui para fornecer uma documentação clara e abrangente da API, descrevendo o uso de cada recurso, parâmetros necessários e formatos de resposta. As requisições por meio do Swagger também exigem autorização via JWT de modo global ou por endpoint.
+
 ## Implementações pendentes:
 
 ** Max Retry, Bloqueio de usuario: ** Criar limite de tentativas de autenticação e bloquear usuário apóx X tentativas malsucedidas, registrar no banco as tentativas de autenticação malsucedidas etc.
@@ -33,5 +35,3 @@ Neste projeto estou aplicando uma série de boas práticas para garantir a quali
 ** Monitoramento e Logs: ** Integrar registros de logs e métricas para facilitar a identificação e resolução de problemas operacionais.
 
 ** Versionamento da API: ** Implementar uma estratégia de versionamento da API para garantir compatibilidade com clientes existentes.
-
-** Documentação Clara: ** Criar uma documentação clara e abrangente da API, descrevendo o uso de cada recurso, parâmetros necessários e formatos de resposta.
