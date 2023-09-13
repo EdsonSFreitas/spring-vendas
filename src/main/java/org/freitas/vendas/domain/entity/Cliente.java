@@ -1,9 +1,8 @@
 package org.freitas.vendas.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 import java.util.*;
 
 /**
@@ -44,7 +43,7 @@ public class Cliente {
     }
 
     public Set<Pedido> getPedidos() {
-        if(pedidos == null){
+        if (pedidos == null) {
             this.pedidos = new HashSet<>();
         }
         return Collections.unmodifiableSet(pedidos);

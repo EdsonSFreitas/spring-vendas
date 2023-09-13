@@ -27,7 +27,6 @@ public class OpenApi30Config {
     private final String contactEmail;
     private final String apiDescription;
 
-
     public OpenApi30Config(
             @Value("${module-name}") String moduleName,
             @Value("${api-version}") String apiVersion,
@@ -45,6 +44,7 @@ public class OpenApi30Config {
 
     @Bean
     public OpenAPI customOpenAPI() {
+
         final String securitySchemeName = "bearerAuth";
         final String apiTitle = String.format("%s API", StringUtils.capitalize(moduleName));
 

@@ -1,6 +1,8 @@
 package org.freitas.vendas.exceptions;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.freitas.vendas.config.InternacionalizacaoConfig;
 import org.springframework.http.HttpStatus;
@@ -17,8 +19,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -108,7 +108,7 @@ public class ResourceExceptionHandler {
                 return ResponseEntity.status(status).body(err);
             }
         }
-        return ResponseEntity.badRequest().body("Erro na requisição: "+ex.getMessage());
+        return ResponseEntity.badRequest().body("Erro na requisição: " + ex.getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -119,14 +119,22 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<String> handleResponseStatusException(ResponseStatusException ex) {
-        return ResponseEntity.status(ex.getStatus()).body(ex.getReason());
+    public ResponseEntity<StandardError> handleResponseStatusException(ResponseStatusException ex, HttpServletRequest request) {
+        String error = "Usuário já existe...";
+        HttpStatus status = HttpStatus.CONFLICT;
+        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity tratarErroBadCredentials() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
+    public ResponseEntity tratarErroBadCredentials(HttpServletRequest request) {
+        Locale locale = request.getLocale();
+        String error = configInternacionalizacao.messageSource().getMessage("field.security.invalid.credential", null, locale);
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, null, null);
+        return ResponseEntity.status(status).body(err);
     }
 
     @ExceptionHandler(AuthenticationException.class)

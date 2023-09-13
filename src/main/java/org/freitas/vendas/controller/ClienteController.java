@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.freitas.vendas.domain.dto.ClienteDto;
 import org.freitas.vendas.domain.entity.Cliente;
 import org.freitas.vendas.domain.repository.ClienteRepository;
@@ -21,8 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.io.Serializable;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
@@ -184,13 +184,11 @@ public class ClienteController implements Serializable {
         if (pageable.getPageSize() > 100) {
             pageable = PageRequest.of(pageable.getPageNumber(), 100, sort);
         }
-        Page<ClienteDto> pageResult = repository.findAllOrderBy(pageable);
-        List<ClienteDto> dtos = pageResult.getContent().stream()
-                .map(ClienteDto::new)
-                .collect(Collectors.toList());
-        Page<ClienteDto> pageDto = new PageImpl<>(dtos, pageable, pageResult.getTotalElements());
+        Page<Cliente> pageResult = repository.findAllOrderBy(pageable);
+        Page<ClienteDto> pageDto = pageResult.map(ClienteDto::fromEntity); // Mapear para DTOs aqui
         return ResponseEntity.ok().body(pageDto);
     }
+
 
 
     @Operation(summary = "Buscar cliente em todos atributos")

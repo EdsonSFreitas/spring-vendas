@@ -26,6 +26,9 @@
 **11. Boas Práticas de Segurança:** Apliquei implementações de segurança, incluindo autenticação, autorização e validação de token, para proteger a API contra ameaças. Também apliquei configuração global para o CORS, validação de complexidade de senha e validação se o username já está em uso no banco de dados.
 
 **12. Documentação Clara:** Implementei springdoc-openapi-ui para fornecer uma documentação clara e abrangente da API, descrevendo o uso de cada recurso, parâmetros necessários e formatos de resposta. As requisições por meio do Swagger também exigem autorização via JWT de modo global ou por endpoint.
+
+**13. Atualização de versão Spring Boot, Java e JJWT:** Atualizei a versão de todas as dependências que exigiu diversas alterações como substituir o WebSecurityConfigurerAdapter, migrar do Spring Boot versão 2.7 para o 3.0, do Java 8 para o Java 17 e implementei atualizações referente ao JJWT.
+
 </details>
 <br>
 
@@ -40,7 +43,7 @@
 ** Versionamento da API: ** Implementar uma estratégia de versionamento da API para garantir compatibilidade com clientes existentes.
 </details>
 <br>
-<details><summary> Como executar esse projeto:</summary>
+<details open><summary> Como executar esse projeto:</summary>
 
 - Para executar o projeto faça o clone do repositório, no diretório onde executar esse comando será criado uma pasta com o nome spring-vendas
 
@@ -87,9 +90,15 @@
     cd target/
     java -jar vendas-0.9.8-SNAPSHOT.jar
     ```
+  
+- Também é possível usar o comando:
+  ```
+  mvn spring-boot:run
+  ```
 
 - Com isso você terá acesso ao http://localhost:8080/swagger-ui/index.html para usar todos os endpoints disponíveis.
-- No endpoint /api/usuarios você deve criar um usuário com senha contendo caracteres minúsculo, maiúsculo, número e ao menos um caractere especial. Em seguida acesse o endpoint /api/usuarios/auth preencha o exemplo JSON com login e senha criados na etapa anterior, será gerado o token que você deve usar para autorizar o acesso via ícone de cadeado com nome “Authorize” disponível no canto direito superior para que o mesmo token seja usado em todos os endpoints ou pode autorizar somente o endpoint que quiser usando o ícone de cadeado ao lado cada endpoint.
+- No endpoint /api/auth/register você deve criar um usuário com senha contendo caracteres minúsculo, maiúsculo, número e ao menos um caractere especial. 
+- Em seguida use o token gerado na etapa anterior para autorizar o acesso via ícone de cadeado com nome “Authorize” disponível no canto direito superior para que o mesmo token seja usado em todos os endpoints.
 
 
 </details>

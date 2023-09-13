@@ -3,7 +3,7 @@ package org.freitas.vendas.domain.entity;
 import lombok.*;
 import org.freitas.vendas.domain.enums.StatusPedido;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;

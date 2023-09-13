@@ -1,8 +1,8 @@
 package org.freitas.vendas.controller;
 
+import jakarta.validation.Valid;
 import org.freitas.vendas.domain.dto.ProdutoDto;
 import org.freitas.vendas.domain.entity.Produto;
-import org.freitas.vendas.domain.repository.ProdutoRepository;
 import org.freitas.vendas.exceptions.DatabaseException;
 import org.freitas.vendas.exceptions.ResourceNotFoundException;
 import org.freitas.vendas.service.ProdutoService;
@@ -11,13 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
@@ -25,7 +22,6 @@ import java.util.Optional;
 
 import static org.freitas.vendas.domain.dto.ProdutoDto.fromEntity;
 import static org.freitas.vendas.util.ValidationUtils.checkId;
-import static org.springframework.http.ResponseEntity.badRequest;
 
 /**
  * @author Edson da Silva Freitas

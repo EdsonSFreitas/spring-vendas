@@ -6,8 +6,8 @@ package org.freitas.vendas.security;
  * {@code @project} spring-vendas
  */
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class PasswordComplexityValidator implements ConstraintValidator<PasswordComplexity, String> {
 

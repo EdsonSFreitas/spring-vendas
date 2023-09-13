@@ -1,5 +1,6 @@
 package org.freitas.vendas.controller;
 
+import jakarta.validation.Valid;
 import org.freitas.vendas.domain.dto.AtualizaStatusPedido;
 import org.freitas.vendas.domain.dto.InformacoesItemPedidoDTO;
 import org.freitas.vendas.domain.dto.InformacoesPedidoDTO;
@@ -10,11 +11,9 @@ import org.freitas.vendas.domain.enums.StatusPedido;
 import org.freitas.vendas.exceptions.ResourceNotFoundException;
 import org.freitas.vendas.service.PedidoService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;

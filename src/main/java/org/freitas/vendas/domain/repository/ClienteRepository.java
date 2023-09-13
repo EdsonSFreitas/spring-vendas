@@ -18,5 +18,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
-    Page<ClienteDto> findAllOrderBy(Pageable pageable);
+    Page<Cliente> findAllOrderBy(Pageable pageable);
 }

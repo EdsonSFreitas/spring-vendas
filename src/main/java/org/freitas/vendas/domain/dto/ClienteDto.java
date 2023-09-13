@@ -2,18 +2,16 @@ package org.freitas.vendas.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.freitas.vendas.domain.entity.Cliente;
 import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.format.annotation.NumberFormat;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -26,32 +24,18 @@ import java.io.Serializable;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClienteDto implements Serializable {
+    @Serial
     private static final long serialVersionUID = -2232353118201999305L;
     Integer id;
     @Schema(example = "Zé das Colves")
     @NotBlank
     String nome;
-    @Schema(example = "123456789")
-    @CPF(message = "{field.cpf.cliente.invalido}")
-    private String cpf;
     @Schema(example = "ze@example.com")
     @Email(regexp = ".+@.+\\..+", message = "{field.email.invalido}")
     String email;
-
-
-    public ClienteDto(Cliente cliente) {
-        this.id = cliente.getId();
-        this.nome = cliente.getNome();
-        this.email = cliente.getEmail();
-        this.cpf = cliente.getCpf();
-    }
-
-    public ClienteDto(ClienteDto dto) {
-        this.id = dto.getId();
-        this.nome = dto.getNome();
-        this.email = dto.getEmail();
-        this.cpf = dto.getCpf();
-    }
+    @Schema(example = "123456789")
+    @CPF(message = "{field.cpf.cliente.invalido}")
+    private String cpf;
 
     public static ClienteDto fromEntity(Cliente cliente) {
         ClienteDto clienteDto = new ClienteDto();

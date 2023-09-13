@@ -1,6 +1,7 @@
 package org.freitas.vendas.domain.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,9 +12,10 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CredentialDTO {
+public class AuthenticationRequest {
+    String password;
     private String login;
-    private String password;
 }
