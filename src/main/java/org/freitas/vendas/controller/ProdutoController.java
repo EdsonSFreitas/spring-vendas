@@ -1,5 +1,6 @@
 package org.freitas.vendas.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.freitas.vendas.domain.dto.ProdutoDto;
 import org.freitas.vendas.domain.entity.Produto;
@@ -29,7 +30,8 @@ import static org.freitas.vendas.util.ValidationUtils.checkId;
  * {@code @project} spring-vendas
  */
 @RestController
-@RequestMapping(value = "/api/v1/produtos")
+@RequestMapping(value = "/api/v1.0/produtos")
+@Tag(name = "Produto")
 public class ProdutoController implements Serializable {
     private static final long serialVersionUID = 6178785521518463717L;
 

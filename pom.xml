@@ -10,10 +10,19 @@
     </parent>
     <groupId>org.freitas</groupId>
     <artifactId>vendas</artifactId>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>${packaging}</packaging>
     <name>vendas</name>
-    <description>Vendas com Spring Boot</description>
+    <description>API de Vendas com Spring Framework</description>
+
+    <developers>
+        <developer>
+            <name>Edson da Silva Freitas</name>
+            <email>edson.s.freitas@gmail.com</email>
+            <timezone>UTC-03:00</timezone>
+        </developer>
+    </developers>
+
     <properties>
         <java.version>17</java.version>
     </properties>

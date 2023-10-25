@@ -1,12 +1,14 @@
-### Projeto API Vendas com Spring Framework
-* Projeto de uma API de vendas para fins de prática aplicando boas práticas e autenticação/autorização via token JWT;
+### Projeto API de Vendas com Spring Framework
+
+* Projeto de uma API de vendas aplicando boas práticas e autenticação/autorização via token JWT;
 * Usuário com controle de acesso baseado em roles, com bloqueio de acesso por data de expiração para a credencial e para a conta;
 * Exceções do Spring Security sendo capturadas via HandlerExceptionResolver;
 * Utilização do messagesource para tradução de mensagens;
 * Validação da complexidade das senhas via anotação personalizada;
+* Versionamento da API baseado no modelo path/URI para estruturar o versionamento e evitar problemas de compatibilidade com clientes existentes.
 
 ###   Dependências utilizadas
-1. Spring boot 3
+1. Spring boot 3.0.6
 2. Spring Web
 3. Spring Security 6 - Usei implementações mais recentes no projeto
 4. Lombok - Diminuir a verbosidade do código
@@ -18,9 +20,10 @@
 10. Spring Context - Fornece contexto de execução da aplicação
 11. JJWT - Autenticação e Autorização via JWT
 12. ModelMapper - Mapeamento entre Model e DTO
+13. JAVA 17
 
 
-<details open><summary>Neste projeto estou aplicando uma série de boas práticas para garantir a qualidade e a eficiência do código da minha API REST com Spring Framework. Estou aplicando técnicas diferentes para demostrar diversas maneiras de implementar os recursos explorados e algumas permissões foram propositalmente mantidas para facilitar o acesso como a console do h2 no ambiente de dev, mas ciente de que um projeto em produção deve seguir padrões de desenvolvimento definidos no escopo do projeto/equipe.</summary>
+<details><summary>Neste projeto estou aplicando uma série de boas práticas para garantir a qualidade e a eficiência do código da minha API REST com Spring Framework. Estou aplicando técnicas diferentes para demostrar diversas maneiras de implementar os recursos explorados e algumas permissões foram propositalmente mantidas para facilitar o acesso como a console do h2 no ambiente de dev, mas ciente de que um projeto em produção deve seguir padrões de desenvolvimento definidos no escopo do projeto/equipe.</summary>
 
 **1. Estrutura de Pacotes Organizada:** Mantenho uma estrutura de pacotes bem organizada, dividindo os componentes em controladores, serviços, repositórios e modelos (DTOs/Entidades).
 
@@ -53,7 +56,7 @@
 </details>
 <br>
 
-<details><summary> Implementações pendentes:</summary>
+<details><summary>  :soon: Implementação futura: </summary>
 
 ** Max Retry, Bloqueio de usuario: ** Criar limite de tentativas de autenticação e bloquear usuário apóx X tentativas malsucedidas, registrar no banco as tentativas de autenticação malsucedidas etc.
 
@@ -61,8 +64,13 @@
 
 ** Monitoramento e Logs: ** Integrar registros de logs e métricas para facilitar a identificação e resolução de problemas operacionais.
 
-** Versionamento da API: ** Implementar uma estratégia de versionamento da API para garantir compatibilidade com clientes existentes.
 </details>
+
+### :dart: Status do projeto
+
+* Em andamento
+
+
 <br>
 <details open><summary> Como executar esse projeto:</summary>
 
@@ -123,3 +131,6 @@
 
 
 </details>
+
+### :framed_picture: Screenshot do Swagger
+![Screenshot Swagger](docs/Swagger-demo.png)

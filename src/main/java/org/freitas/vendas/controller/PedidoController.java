@@ -1,5 +1,6 @@
 package org.freitas.vendas.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.freitas.vendas.domain.dto.AtualizaStatusPedido;
 import org.freitas.vendas.domain.dto.InformacoesItemPedidoDTO;
@@ -26,7 +27,8 @@ import java.util.stream.Collectors;
  * {@code @project} spring-vendas
  */
 @RestController
-@RequestMapping(value = "/api/v1/pedidos")
+@RequestMapping(value = "/api/v1.0/pedidos")
+@Tag(name = "Pedidos")
 public class PedidoController implements Serializable {
 
     private static final long serialVersionUID = -7985726640015917002L;

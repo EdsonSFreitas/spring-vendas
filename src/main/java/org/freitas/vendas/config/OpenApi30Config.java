@@ -6,10 +6,12 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
+
 
 /**
  * @author Edson da Silva Freitas
@@ -45,6 +47,7 @@ public class OpenApi30Config {
     @Bean
     public OpenAPI customOpenAPI() {
 
+
         final String securitySchemeName = "bearerAuth";
         final String apiTitle = String.format("%s API", StringUtils.capitalize(moduleName));
 
@@ -74,4 +77,37 @@ public class OpenApi30Config {
                         .contact(contact)
                 );
     }
+
+/*    static {
+        SpringDocUtils.getConfig().addRequestWrapperToIgnore(org.springframework.web.multipart.MultipartFile.class);
+    }*/
+
+
+    @Bean
+    public GroupedOpenApi apiV1() {
+        return GroupedOpenApi.builder()
+                .group("vendas-api-1.0")
+                .pathsToExclude("/api/v2/**", "/v2/**", "/**/v3/**")
+                .pathsToMatch("/api/v1.0/**", "/v1/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi apiV1_1() {
+        return GroupedOpenApi.builder()
+                .group("vendas-api-1.1")
+                .pathsToExclude("/api/v1/**", "/v1/**", "/**/v2/**", "/**/v3/**")
+                .pathsToMatch("/api/v1.1/**", "/v1.1/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi apiV1_2() {
+        return GroupedOpenApi.builder()
+                .group("vendas-api-1.2")
+                .pathsToExclude("/api/v1.0/**", "/v1.1/**", "/**/v2/**", "/**/v3/**")
+                .pathsToMatch("/api/v1.2/**", "/v1.2/**")
+                .build();
+    }
+
 }

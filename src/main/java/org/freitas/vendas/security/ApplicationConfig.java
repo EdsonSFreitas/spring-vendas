@@ -1,4 +1,4 @@
-package org.freitas.vendas.service.impl;
+package org.freitas.vendas.security;
 
 import lombok.RequiredArgsConstructor;
 import org.freitas.vendas.domain.repository.UsuarioRepository;

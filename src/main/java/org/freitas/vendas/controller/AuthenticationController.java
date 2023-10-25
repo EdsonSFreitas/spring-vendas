@@ -1,5 +1,7 @@
 package org.freitas.vendas.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.freitas.vendas.domain.dto.AuthenticationRequest;
@@ -28,14 +30,23 @@ import java.time.ZonedDateTime;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api")
+@Tag(name = "Authentication")
 public class AuthenticationController implements Serializable {
     @Serial
     private static final long serialVersionUID = -7484640256766898249L;
     private final transient AuthenticationService service;
     private final transient MessageSource messageSource;
 
-    @PostMapping("/register")
+
+    /**
+     * Authenticates the user using the provided authentication request.
+     *
+     * @param request the authentication request containing the user's credentials
+     * @return the authentication response containing the user's token and other information
+     */
+
+    @PostMapping({"/v1.0/auth/register", "/v1.1/auth/register"})
     public ResponseEntity<AuthenticationResponse> salvar(@Valid @RequestBody RegisterRequest request) {
         try {
             AuthenticationResponse response = service.salvar(request);
@@ -57,13 +68,40 @@ public class AuthenticationController implements Serializable {
         }
     }
 
-    @PostMapping("/authenticate")
+    /**
+     * Authenticates the user using the provided authentication request.
+     * This method is used to demonstrate API versioning with a simple change in the response.
+     *
+     * @param request the authentication request containing the user's credentials
+     * @return the authentication response containing the user's token and other information
+     */
+    @Operation(summary = "Authenticate user", description = "Authenticate credential with login and password")
+    @PostMapping({"/v1.0/auth/authenticate", "/v1.1/auth/authenticate"})
     public ResponseEntity<AuthenticationResponse> autenticar(@Valid @RequestBody AuthenticationRequest request) {
         AuthenticationResponse response = service.authenticate(request);
         AuthenticationResponse convertResponse = AuthenticationResponse.builder()
                 .token(response.getToken())
                 .login(response.getLogin())
                 .timestamp(ZonedDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(convertResponse);
+    }
+
+    /**
+     * Authenticates the user using the provided authentication request.
+     *
+     * @param request the authentication request containing the user's credentials
+     * @return the authentication response containing the user's token and other information
+     */
+    @Operation(summary = "Authenticate user v1.2", description = "Authenticate credential with login and password")
+    @PostMapping({"/v1.2/auth/authenticate"})
+    public ResponseEntity<AuthenticationResponse> autenticarv1_2(@Valid @RequestBody AuthenticationRequest request) {
+        AuthenticationResponse response = service.authenticate(request);
+        AuthenticationResponse convertResponse = AuthenticationResponse.builder()
+                .token(response.getToken())
+                .login(response.getLogin())
+                .timestamp(ZonedDateTime.now())
+                .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(convertResponse);
     }

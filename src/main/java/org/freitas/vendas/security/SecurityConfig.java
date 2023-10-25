@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
+
 /**
  * @author Edson da Silva Freitas
  * {@code @created} 05/09/2023
@@ -60,9 +62,8 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/register/**").permitAll()
-                        .requestMatchers("/api/v1/pedidos/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(regexMatcher(HttpMethod.POST, "/api/v1.\\d+/auth/.*")).permitAll()
+                        .requestMatchers("/api/v1.0/pedidos/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                         .and())
                 .sessionManagement()
