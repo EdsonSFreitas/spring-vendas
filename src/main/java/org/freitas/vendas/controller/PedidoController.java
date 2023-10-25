@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * {@code @project} spring-vendas
  */
 @RestController
-@RequestMapping(value = "/api/pedidos")
+@RequestMapping(value = "/api/v1/pedidos")
 public class PedidoController implements Serializable {
 
     private static final long serialVersionUID = -7985726640015917002L;

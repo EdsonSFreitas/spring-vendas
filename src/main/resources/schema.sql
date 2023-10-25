@@ -41,5 +41,10 @@ CREATE TABLE tb_usuario (
    login VARCHAR(255),
    senha VARCHAR(255),
    admin BOOLEAN NOT NULL,
+   account_expiration datetime,
+   is_account_locked boolean,
+   credentials_expiration datetime,
+   is_enabled boolean,
+   role VARCHAR(255),
    CONSTRAINT pk_tb_usuario PRIMARY KEY (id)
 );

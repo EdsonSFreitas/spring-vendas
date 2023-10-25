@@ -29,7 +29,7 @@ import static org.freitas.vendas.util.ValidationUtils.checkId;
  * {@code @project} spring-vendas
  */
 @RestController
-@RequestMapping(value = "/api/produtos")
+@RequestMapping(value = "/api/v1/produtos")
 public class ProdutoController implements Serializable {
     private static final long serialVersionUID = 6178785521518463717L;
 

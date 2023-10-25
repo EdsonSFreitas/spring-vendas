@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.freitas.vendas.config.InternacionalizacaoConfig;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  * {@code @project} spring-vendas
  */
 @ControllerAdvice
+@Order(1)
 public class ResourceExceptionHandler {
 
     InternacionalizacaoConfig configInternacionalizacao = new InternacionalizacaoConfig();
@@ -64,11 +66,6 @@ public class ResourceExceptionHandler {
                         fieldError.getDefaultMessage()))
                 .collect(Collectors.toList());
         return ResponseEntity.badRequest().body(erros);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity tratarErro500(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " + ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(PedidoNotFoundException.class)

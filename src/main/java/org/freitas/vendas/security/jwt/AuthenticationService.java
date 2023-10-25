@@ -29,6 +29,8 @@ public class AuthenticationService {
                 .login(request.getLogin())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
+                .isEnabled(true)
+                .isAccountLocked(false)
                 .build();
 
         repository.findByLogin(request.getLogin()).ifPresent(u -> {

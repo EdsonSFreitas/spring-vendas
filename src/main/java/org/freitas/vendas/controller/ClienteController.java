@@ -42,7 +42,7 @@ import static org.freitas.vendas.util.ValidationUtils.validarFiltroClienteDto;
  */
 @RestController
 @Tag(name = "Clientes", description = "Operações relacionadas aos clientes")
-@RequestMapping(value = "/api/clientes")
+@RequestMapping(value = "/api/v1/clientes")
 public class ClienteController implements Serializable {
     private static final long serialVersionUID = 8553757501330900962L;
 

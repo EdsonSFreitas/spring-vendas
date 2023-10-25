@@ -21,7 +21,7 @@ public class UsuarioDto implements Serializable {
     @NotEmpty(message = "{field.login.obrigatorio}")
     private String login;
     @NotEmpty(message = "{field.senha.obrigatorio}")
- //   @PasswordComplexity(minLength = 3, requireLowerCase = true, requireUpperCase = true, requireSpecialChar = true, requireNumber = true, message = "{field.senha.complexidade}")
+    @PasswordComplexity(minLength = 3, requireLowerCase = true, requireUpperCase = true, requireSpecialChar = true, requireNumber = true, message = "{field.senha.complexidade}")
     private String password;
     boolean admin;
     private Role role;

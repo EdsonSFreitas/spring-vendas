@@ -21,6 +21,7 @@ target/
 mvnw.*
 mvnw
 .mvn
+/.run/
 
 ### NetBeans ###
 /nbproject/private/

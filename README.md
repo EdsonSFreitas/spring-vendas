@@ -1,4 +1,23 @@
-**Boas Práticas Adotadas Nessa API REST com Spring Framework Até o Momento:**
+### Projeto API Vendas com Spring Framework
+* Projeto de uma API de vendas para fins de prática aplicando boas práticas e autenticação/autorização via token JWT;
+* Usuário com controle de acesso baseado em roles, com bloqueio de acesso por data de expiração para a credencial e para a conta;
+* Exceções do Spring Security sendo capturadas via HandlerExceptionResolver;
+* Utilização do messagesource para tradução de mensagens;
+* Validação da complexidade das senhas via anotação personalizada;
+
+###   Dependências utilizadas
+1. Spring boot 3
+2. Spring Web
+3. Spring Security 6 - Usei implementações mais recentes no projeto
+4. Lombok - Diminuir a verbosidade do código
+5. Spring Data JPA
+6. PostgreSQL Driver para acesso ao banco de dados no ambiente de produção
+7. Database H2 para ambiente de dev
+8. Validation - Validações diversas
+9. Spring OpenAPI UI - Swagger para documentação da API
+10. Spring Context - Fornece contexto de execução da aplicação
+11. JJWT - Autenticação e Autorização via JWT
+12. ModelMapper - Mapeamento entre Model e DTO
 
 
 <details open><summary>Neste projeto estou aplicando uma série de boas práticas para garantir a qualidade e a eficiência do código da minha API REST com Spring Framework. Estou aplicando técnicas diferentes para demostrar diversas maneiras de implementar os recursos explorados e algumas permissões foram propositalmente mantidas para facilitar o acesso como a console do h2 no ambiente de dev, mas ciente de que um projeto em produção deve seguir padrões de desenvolvimento definidos no escopo do projeto/equipe.</summary>
@@ -13,7 +32,7 @@
 
 **5. Respostas HTTP Adequadas:** Utilizo os códigos de status HTTP apropriados nas respostas da API, assegurando respostas claras e adequadas.
 
-**6. Tratamento de Exceções:** Implemento um tratamento de exceções personalizado para fornecer respostas apropriadas em caso de erros e evitar a exposição de detalhes técnicos.
+**6. Tratamento de Exceções:** Implemento um tratamento de exceções personalizado para fornecer respostas apropriadas em caso de erros e evitar a exposição de detalhes técnicos. As exceções do Spring Security também são tratadas via HandlerExceptionResolver.
 
 **7. Paginação e Ordenação:** Implemento recursos de paginação e ordenação para simplificar a navegação pelos resultados da API e um limit de requisições.
 
@@ -28,6 +47,8 @@
 **12. Documentação Clara:** Implementei springdoc-openapi-ui para fornecer uma documentação clara e abrangente da API, descrevendo o uso de cada recurso, parâmetros necessários e formatos de resposta. As requisições por meio do Swagger também exigem autorização via JWT de modo global ou por endpoint.
 
 **13. Atualização de versão Spring Boot, Java e JJWT:** Atualizei a versão de todas as dependências que exigiu diversas alterações como substituir o WebSecurityConfigurerAdapter, migrar do Spring Boot versão 2.7 para o 3.0, do Java 8 para o Java 17 e implementei atualizações referente ao JJWT.
+
+**14. Controle de acesso:** Implementei estratégia de controle de acesso que verifica se a conta do usuário está expirada, bloqueada, ativa ou com senha expirada. Além de usar roles com anotação @RolesAllowed para limitar acesso por endpoint. 
 
 </details>
 <br>

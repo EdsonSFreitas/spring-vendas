@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +59,9 @@ public class JWTService {
                 .setSubject(userDetails.getUsername())
                 .setIssuer("freitas.com.br")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(Date.from(LocalDateTime.now()
+                        .plusMinutes(1)
+                        .toInstant(ZoneOffset.of("-03:00"))))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
