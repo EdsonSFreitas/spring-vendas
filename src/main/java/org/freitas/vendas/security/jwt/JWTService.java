@@ -27,7 +27,7 @@ import java.util.function.Function;
 @Service
 public class JWTService {
     @Value("${security.jwt.expiration}")
-    private String expiration;
+    private int expiration;
     @Value("${security.jwt.secret}")
     private String secret;
 
@@ -60,7 +60,7 @@ public class JWTService {
                 .setIssuer("freitas.com.br")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(LocalDateTime.now()
-                        .plusMinutes(1)
+                        .plusMinutes(expiration)
                         .toInstant(ZoneOffset.of("-03:00"))))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();

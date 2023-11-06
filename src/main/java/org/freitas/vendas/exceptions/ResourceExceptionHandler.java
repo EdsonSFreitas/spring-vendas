@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -130,6 +131,14 @@ public class ResourceExceptionHandler {
         Locale locale = request.getLocale();
         String error = configInternacionalizacao.messageSource().getMessage("field.security.invalid.credential", null, locale);
         HttpStatus status = HttpStatus.UNAUTHORIZED;
+        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, null, null);
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity tratarUsernameNotFoundException(UsernameNotFoundException request) {
+        String error = configInternacionalizacao.messageSource().getMessage("usuario.notfound.db", null, Locale.getDefault());
+        HttpStatus status = HttpStatus.NOT_FOUND;
         StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, null, null);
         return ResponseEntity.status(status).body(err);
     }

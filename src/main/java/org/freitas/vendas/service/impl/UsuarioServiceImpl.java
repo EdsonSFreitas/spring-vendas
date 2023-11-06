@@ -5,7 +5,10 @@ import org.freitas.vendas.domain.dto.UsuarioStatusUpdateDTO;
 import org.freitas.vendas.domain.entity.Usuario;
 import org.freitas.vendas.domain.repository.UsuarioRepository;
 import org.freitas.vendas.service.UsuarioService;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +20,7 @@ import java.util.Optional;
 /**
  * Classe com logica de autenticacao do projeto e implementa UserDetailsService
  * Sprint ira carregar automaticamente essa classe por ter @Service e implementar UserDetailsSerivce
+ *
  * @author Edson da Silva Freitas
  * {@code @created} 21/05/2023
  * {@code @project} api
@@ -40,30 +44,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
 
-    //@Override
     @Override
     public Optional<UsuarioStatusRetornoDTO> updateUsuario(Integer id, UsuarioStatusUpdateDTO updateStatus) {
         final Usuario userToChange = repository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: "+ id));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + id));
 
-        // Dessa forma usando if é a mais simples, menos verbosa, fácil de entender e funciona mas mantive a versão mais complexa para fins de testes:
-		if (updateStatus.getAccountExpiration() != null) {
-            userToChange.setAccountExpiration(updateStatus.getAccountExpiration());
-        }
-        if (updateStatus.getIsAccountLocked() != null) {
-            userToChange.setAccountLocked(updateStatus.getIsAccountLocked());
-        }
-        if (updateStatus.getCredentialsExpiration() != null) {
-            userToChange.setCredentialsExpiration(updateStatus.getCredentialsExpiration());
-        }
-        if (updateStatus.getIsEnabled() != null) {
-            userToChange.setEnabled(updateStatus.getIsEnabled());
-        }
-        if (updateStatus.getRole() != null) {
-            userToChange.setRole(updateStatus.getRole());
-        }
-
-/*
         TypeMap<UsuarioStatusUpdateDTO, Usuario> typeMap =
                 modelMapper.getTypeMap(UsuarioStatusUpdateDTO.class, Usuario.class);
 
@@ -81,6 +66,24 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         modelMapper.map(updateStatus, userToChange);
+
+        /*
+        // Dessa forma usando if é a mais simples, menos verbosa, fácil de entender e funciona mas mantive a versão mais complexa para fins de testes:
+        if (updateStatus.getAccountExpiration() != null) {
+            userToChange.setAccountExpiration(updateStatus.getAccountExpiration());
+        }
+        if (updateStatus.getIsAccountLocked() != null) {
+            userToChange.setAccountLocked(updateStatus.getIsAccountLocked());
+        }
+        if (updateStatus.getCredentialsExpiration() != null) {
+            userToChange.setCredentialsExpiration(updateStatus.getCredentialsExpiration());
+        }
+        if (updateStatus.getIsEnabled() != null) {
+            userToChange.setEnabled(updateStatus.getIsEnabled());
+        }
+        if (updateStatus.getRole() != null) {
+            userToChange.setRole(updateStatus.getRole());
+        }
 */
 
         final Usuario user = repository.save(userToChange);
@@ -95,5 +98,17 @@ public class UsuarioServiceImpl implements UsuarioService {
                 user.getRole()
         );
         return Optional.of(retornoDTO);
+    }
+
+    @Override
+    public void deleteUser(Integer id) {
+        final Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + id));
+        repository.deleteById(usuario.getId());
+    }
+
+    @Override
+    public Optional<Usuario> findById(Integer id) {
+        return repository.findById(id);
     }
 }

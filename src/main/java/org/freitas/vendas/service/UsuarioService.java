@@ -17,6 +17,9 @@ import java.util.Optional;
 public interface UsuarioService {
     Page<Usuario> findAll(Pageable paginacao);
 
-    //@Override
     Optional<UsuarioStatusRetornoDTO> updateUsuario(Integer id, UsuarioStatusUpdateDTO updateStatus);
+
+    void deleteUser(Integer id);
+
+    Optional<Usuario> findById(Integer id);
 }

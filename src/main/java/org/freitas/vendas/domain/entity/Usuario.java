@@ -1,10 +1,13 @@
 package org.freitas.vendas.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.freitas.vendas.domain.enums.Role;
 import org.freitas.vendas.security.PasswordComplexity;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.ModifiedEntityNames;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +22,7 @@ import java.util.Objects;
  * {@code @created} 06/09/2023
  * {@code @project} spring-vendas
  */
+@Audited
 @Getter
 @Setter
 @ToString
@@ -52,6 +56,9 @@ public class Usuario implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Version
+    private Long version;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
