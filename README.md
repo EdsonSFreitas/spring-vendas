@@ -6,6 +6,7 @@
 * Utilização do messagesource para tradução de mensagens;
 * Validação da complexidade das senhas via anotação personalizada;
 * Versionamento da API baseado no modelo path/URI para estruturar o versionamento e evitar problemas de compatibilidade com clientes existentes.
+* Adicionei monitoramento via Spring Boot Admin Client 
 
 ###   Dependências utilizadas
 1. Spring boot 3.0.6
@@ -21,6 +22,7 @@
 11. JJWT - Autenticação e Autorização via JWT
 12. ModelMapper - Mapeamento entre Model e DTO
 13. JAVA 17
+14. Spring Boot Admin Client
 
 
 <details><summary>Neste projeto estou aplicando uma série de boas práticas para garantir a qualidade e a eficiência do código da minha API REST com Spring Framework. Estou aplicando técnicas diferentes para demostrar diversas maneiras de implementar os recursos explorados e algumas permissões foram propositalmente mantidas para facilitar o acesso como a console do h2 no ambiente de dev, mas ciente de que um projeto em produção deve seguir padrões de desenvolvimento definidos no escopo do projeto/equipe.</summary>

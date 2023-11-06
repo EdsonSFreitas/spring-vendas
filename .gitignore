@@ -22,6 +22,8 @@ mvnw.*
 mvnw
 .mvn
 /.run/
+*.log
+*.gz
 
 ### NetBeans ###
 /nbproject/private/

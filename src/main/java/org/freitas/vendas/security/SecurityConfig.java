@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.freitas.vendas.security.jwt.SecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -38,6 +39,9 @@ public class SecurityConfig {
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver exceptionResolver;
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
     @Bean
     public SecurityFilter filter() {
         return new SecurityFilter(exceptionResolver);
@@ -45,36 +49,42 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers(
-                                "/api/v1/auth/**",
-                                "/v2/api-docs",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/swagger-resources",
-                                "/swagger-resources/**",
-                                "/configuration/ui",
-                                "/configuration/security",
-                                "/swagger-ui/**",
-                                "/webjars/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
-                        .requestMatchers(regexMatcher(HttpMethod.POST, "/api/v1.\\d+/auth/.*")).permitAll()
-                        .requestMatchers("/api/v1.0/pedidos/**").hasAnyRole("USER", "ADMIN")
-                        .anyRequest().authenticated()
-                        .and())
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                //.authenticationProvider(authenticationProvider)
-                .addFilterBefore(filter(), UsernamePasswordAuthenticationFilter.class)
-                .headers(headers -> headers.frameOptions().disable())
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")))
-                .csrf().disable();
+        if(activeProfile.equals("test")) {
+            http.csrf().disable().authorizeHttpRequests().anyRequest().permitAll();
+        }else {
+            http
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers(
+                                    AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                            .requestMatchers(
+                                    "/api/v1/auth/**",
+                                    "/v2/api-docs",
+                                    "/v3/api-docs",
+                                    "/v3/api-docs/**",
+                                    "/swagger-resources",
+                                    "/swagger-resources/**",
+                                    "/configuration/ui",
+                                    "/configuration/security",
+                                    "/swagger-ui/**",
+                                    "/webjars/**",
+                                    "/swagger-ui.html",
+                                    "/manage/**"
+                            ).permitAll()
+                            .requestMatchers(regexMatcher(HttpMethod.POST, "/api/v1.\\d+/auth/.*")).permitAll()
+                            .requestMatchers("/api/v1.0/pedidos/**").hasAnyRole("USER", "ADMIN")
+                            .anyRequest().authenticated()
+                            .and())
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    //.authenticationProvider(authenticationProvider)
+                    .addFilterBefore(filter(), UsernamePasswordAuthenticationFilter.class)
+                    .headers(headers -> headers.frameOptions().disable())
+                    .csrf(csrf -> csrf
+                            .ignoringRequestMatchers(
+                                    AntPathRequestMatcher.antMatcher("/h2-console/**" )))
+                    .csrf().disable();
+        }
 
         return http.build();
     }

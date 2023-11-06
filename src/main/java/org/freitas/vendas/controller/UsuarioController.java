@@ -9,7 +9,6 @@ import org.freitas.vendas.domain.dto.DadosAutenticacaoRetorno;
 import org.freitas.vendas.domain.dto.UsuarioStatusRetornoDTO;
 import org.freitas.vendas.domain.dto.UsuarioStatusUpdateDTO;
 import org.freitas.vendas.service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,11 +23,13 @@ import java.util.Optional;
 @Tag(name = "Usuario")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService service;
+    private final UsuarioService service;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UsuarioController(UsuarioService service, PasswordEncoder passwordEncoder) {
+        this.service = service;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping(value = "/v1.0/usuario")
     public ResponseEntity<Page<DadosAutenticacaoRetorno>> findAllUsuarios(

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @PropertySource(value = "classpath:messages_en_US.properties", encoding = "UTF-8", ignoreResourceNotFound = true)
 @PropertySource(value = "classpath:messages_pt_BR.properties", encoding = "UTF-8", ignoreResourceNotFound = true)
-@SpringBootApplication
+@SpringBootApplication() //(exclude = {org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class})
 public class VendasApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
